@@ -1,4 +1,7 @@
-# Microservices with .Net Core, Docker and Azure Service Fabric
+# Chaos injection using Simmy in a Microservice architecture
+A microservice based application to demonstrate how chaos engineering works with Simmy using chaos policies in a distributed system.
+
+# WIP
 
 ## Prerequisites and Installation Requirements
 
