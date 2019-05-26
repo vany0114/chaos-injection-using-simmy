@@ -1,5 +1,5 @@
 # Chaos injection using Simmy in a Microservice architecture
-A microservice based application to demonstrate how chaos engineering works with Simmy using chaos policies in a distributed system.
+A microservice based application to demonstrate how chaos engineering works with [Simmy](https://github.com/Polly-Contrib/Simmy) using chaos policies in a distributed system.
 
 # WIP
 
