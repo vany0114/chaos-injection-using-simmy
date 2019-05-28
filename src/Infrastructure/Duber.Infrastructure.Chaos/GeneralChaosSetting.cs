@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Duber.Infrastructure.Chaos
 {
+    [Serializable]
     public class GeneralChaosSetting
     {
         public bool AutomaticChaosInjectionEnabled { get; set; }

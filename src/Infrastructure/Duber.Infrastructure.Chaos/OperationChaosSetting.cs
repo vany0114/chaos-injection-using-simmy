@@ -2,6 +2,7 @@
 
 namespace Duber.Infrastructure.Chaos
 {
+    [Serializable]
     public class OperationChaosSetting
     {
         public string OperationKey { get; set; }

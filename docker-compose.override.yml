@@ -8,6 +8,7 @@ services:
       - EventBusConnection=${AZURE_SERVICE_BUS:-rabbitmq}
       - PaymentServiceBaseUrl=${PAYMENT_SERVICE_URL:-http://externalsystem.payment}
       - AzureServiceBusEnabled=${SERVICE_BUS_ENABLED:-False}
+      - ChaosApiSettings__BaseUrl=${CHAOS_SERVICE_URL:-http://duber.chaos.api}
     ports:
       - "32776:80"
 
@@ -17,8 +18,20 @@ services:
       - EventStoreConfiguration__ConnectionString=${AZURE_TRIP_DB:-mongodb://nosql.data}
       - EventBusConnection=${AZURE_SERVICE_BUS:-rabbitmq}
       - AzureServiceBusEnabled=${SERVICE_BUS_ENABLED:-False}
+      - ChaosApiSettings__BaseUrl=${CHAOS_SERVICE_URL:-http://duber.chaos.api}
     ports:
       - "32775:80"
+
+  duber.chaos.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${APP_ENVIRONMENT:-Development}
+      - ConnectionString=${AZURE_CHAOS_DB:-}
+      - GeneralChaosSetting__SubscriptionId=${SUBSCRIPTIONID:-}
+      - GeneralChaosSetting__TenantId=${TENANTID:-}
+      - GeneralChaosSetting__ClientId=${CLIENTID:-}
+      - GeneralChaosSetting__ClientKey=${CLIENTKEY:-}
+    ports:
+      - "32778:80"
 
   duber.website:
     environment:
@@ -27,6 +40,7 @@ services:
       - EventBusConnection=${AZURE_SERVICE_BUS:-rabbitmq}
       - TripApiSettings__BaseUrl=${TRIP_SERVICE_BASE_URL:-http://duber.trip.api}
       - AzureServiceBusEnabled=${SERVICE_BUS_ENABLED:-False}
+      - ChaosApiSettings__BaseUrl=${CHAOS_SERVICE_URL:-http://duber.chaos.api}
     ports:
       - "32774:80"
 

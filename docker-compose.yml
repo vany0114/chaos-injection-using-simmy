@@ -7,6 +7,7 @@ services:
         context: .
         dockerfile: src/Application/Duber.Invoice.API/Dockerfile
       depends_on:
+      - duber.chaos.api
       - sql.data
       - rabbitmq
 
@@ -16,8 +17,15 @@ services:
       context: .
       dockerfile: src/Application/Duber.Trip.API/Dockerfile
     depends_on:
+      - duber.chaos.api
       - nosql.data
       - rabbitmq
+
+  duber.chaos.api:
+    image: duber/chaos.api:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Application/Duber.Chaos.API/Dockerfile
 
   duber.website:
     image: duber/website:${TAG:-latest}
@@ -25,6 +33,7 @@ services:
       context: .
       dockerfile: src/Web/Duber.WebSite/Dockerfile
     depends_on:
+      - duber.chaos.api
       - duber.invoice.api
       - duber.trip.api
       - sql.data

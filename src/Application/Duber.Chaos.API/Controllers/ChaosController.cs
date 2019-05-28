@@ -51,7 +51,7 @@ namespace Duber.Chaos.API.Controllers
         /// <summary>
         /// Save the provided chaos settings.
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="settings"></param>
         /// <returns>No content.</returns>
         /// <response code="204">No content.</response>
         [Route("update")]
