@@ -2,9 +2,11 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Duber.Infrastructure.Chaos;
+using Duber.Infrastructure.Chaos.IoC;
 using Duber.Infrastructure.EventBus.Abstractions;
 using Duber.Infrastructure.EventBus.RabbitMQ.IoC;
 using Duber.Infrastructure.EventBus.ServiceBus.IoC;
+using Duber.Infrastructure.Resilience.Abstractions;
 using Duber.WebSite.Application.IntegrationEvents.Events;
 using Duber.WebSite.Application.IntegrationEvents.Handlers;
 using Duber.WebSite.Extensions;
@@ -43,6 +45,7 @@ namespace Duber.WebSite
 
             services.Configure<TripApiSettings>(Configuration.GetSection("TripApiSettings"))
                 .AddResilientStrategies(Configuration)
+                .AddChaosApiHttpClient(Configuration)
                 .AddPersistenceAndRepositories(Configuration);
 
             // service bus configuration
@@ -75,8 +78,10 @@ namespace Duber.WebSite
 
                 // We only want to add Simmy chaos injection in stage or prod environments in order to test out our resiliency.
                 // Wrap every policy in the policy registry in Simmy chaos injectors.
-                var registry = app.ApplicationServices.GetRequiredService<IPolicyRegistry<string>>();
-                registry?.AddHttpChaosInjectors();
+                var httpPoliciesRegistry = app.ApplicationServices.GetRequiredService<IPolicyRegistry<string>>();
+                var sqlPoliciesRegistry = app.ApplicationServices.GetRequiredService<IPolicyAsyncExecutor>();
+                httpPoliciesRegistry?.AddHttpChaosInjectors();
+                sqlPoliciesRegistry.PolicyRegistry.AddChaosInjectors();
             }
 
             app.UseSignalR(routes =>

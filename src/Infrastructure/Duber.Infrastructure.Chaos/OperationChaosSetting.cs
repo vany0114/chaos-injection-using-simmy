@@ -17,9 +17,5 @@ namespace Duber.Infrastructure.Chaos
         public string Exception { get; set; }
 
         public TimeSpan Duration { get; set; }
-
-        public int PercentageNodesToRestart { get; set; }
-
-        public int PercentageNodesToStop { get; set; }
     }
 }

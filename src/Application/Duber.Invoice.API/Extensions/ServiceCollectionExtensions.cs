@@ -43,8 +43,9 @@ namespace Duber.Invoice.API.Extensions
             {
                 var mediator = provider.GetService<IMediator>();
                 var sqlExecutor = provider.GetService<IPolicyAsyncExecutor>();
+                var chaosSettings = provider.GetService<GeneralChaosSetting>();
                 var connectionString = configuration["ConnectionString"];
-                return new InvoiceContext(connectionString, mediator, sqlExecutor);
+                return new InvoiceContext(connectionString, mediator, sqlExecutor, chaosSettings);
             });
 
             services.AddTransient<IInvoiceRepository, InvoiceRepository>();
@@ -57,13 +58,10 @@ namespace Duber.Invoice.API.Extensions
             services.AddSingleton<IPolicyAsyncExecutor>(sp =>
             {
                 var sqlPolicyBuilder = new SqlPolicyBuilder();
-                var sqlResilientExecutor = sqlPolicyBuilder
-                                            .UseAsyncExecutor()
-                                            .WithDefaultPolicies()
-                                            .Build();
-
-                sqlResilientExecutor.PolicyRegistry.AddChaosInjectors();
-                return sqlResilientExecutor;
+                return sqlPolicyBuilder
+                    .UseAsyncExecutor()
+                    .WithDefaultPolicies()
+                    .Build();
             });
 
             // Create (and register with DI) a policy registry containing some policies we want to use.
@@ -111,7 +109,8 @@ namespace Duber.Invoice.API.Extensions
             {
                 var httpInvoker = provider.GetRequiredService<ResilientHttpClient>();
                 var paymentServiceBaseUrl = configuration["PaymentServiceBaseUrl"];
-                return new PaymentServiceAdapter(httpInvoker, paymentServiceBaseUrl);
+                var chaosSettings = provider.GetService<GeneralChaosSetting>();
+                return new PaymentServiceAdapter(httpInvoker, paymentServiceBaseUrl, chaosSettings);
             });
 
             return services;

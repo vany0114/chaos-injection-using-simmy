@@ -18,6 +18,10 @@ namespace Duber.Infrastructure.Chaos
 
         public string ClientKey { get; set; }
 
+        public int PercentageNodesToRestart { get; set; }
+
+        public int PercentageNodesToStop { get; set; }
+
         public List<OperationChaosSetting> OperationChaosSettings { get; set; }
 
         public OperationChaosSetting GetSettingsFor(string operationKey) => OperationChaosSettings?.SingleOrDefault(i => i.OperationKey == operationKey);

@@ -16,21 +16,25 @@ namespace Duber.Domain.Invoice.Persistence
 {
     public class InvoiceContext : IInvoiceContext
     {
-        private readonly string _connectionString;
+        private Context _context;
         private IDbConnection _connection;
         private readonly IMediator _mediator;
+        private readonly string _connectionString;
+        private readonly GeneralChaosSetting _generalChaosSetting;
         private readonly IPolicyAsyncExecutor _resilientSqlExecutor;
-        private Context _context;
 
-        public InvoiceContext(string connectionString, IMediator mediator, IPolicyAsyncExecutor resilientSqlExecutor)
+        public InvoiceContext(string connectionString, IMediator mediator, IPolicyAsyncExecutor resilientSqlExecutor, GeneralChaosSetting generalChaosSetting)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
                 throw new ArgumentException(nameof(connectionString));
 
             _connectionString = connectionString;
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _generalChaosSetting = generalChaosSetting ?? throw new ArgumentException(nameof(generalChaosSetting));
             _resilientSqlExecutor = resilientSqlExecutor ?? throw new ArgumentNullException(nameof(resilientSqlExecutor));
-            _context = new Context(OperationKeys.WebSiteSqlDB.ToString()).WithChaosSettings(new GeneralChaosSetting());
+
+            // this gonna inject the same chaos monkeys for all sql operations inside of this repo.
+            _context = new Context(OperationKeys.InvoiceDbOperations.ToString()).WithChaosSettings(_generalChaosSetting);
         }
 
         public async Task<int> ExecuteAsync<T>(T entity, string sql, object parameters = null, int? timeOut = null, CommandType? commandType = null)

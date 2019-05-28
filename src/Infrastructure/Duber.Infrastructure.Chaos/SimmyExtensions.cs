@@ -226,20 +226,20 @@ namespace Duber.Infrastructure.Chaos
 
         private static Task RestartNodes(Context context, CancellationToken token)
         {
-            var chaosSettings = context.GetOperationChaosSettings();
-            if (chaosSettings == null) return NoRestartNodes;
-            if (chaosSettings.PercentageNodesToRestart <= 0) return NoRestartNodes;
+            var chaosGeneralSettings = context.GetChaosSettings();
+            if (chaosGeneralSettings == null) return NoRestartNodes;
+            if (chaosGeneralSettings.PercentageNodesToRestart <= 0) return NoRestartNodes;
 
-            return ClusterChaosManager.RestartNodes(context.GetChaosSettings(), chaosSettings.PercentageNodesToRestart);
+            return ClusterChaosManager.RestartNodes(context.GetChaosSettings(), chaosGeneralSettings.PercentageNodesToRestart);
         }
 
         private static Task StopNodes(Context context, CancellationToken token)
         {
-            var chaosSettings = context.GetOperationChaosSettings();
-            if (chaosSettings == null) return NoRestartNodes;
-            if (chaosSettings.PercentageNodesToStop <= 0) return NoRestartNodes;
+            var chaosGeneralSettings = context.GetChaosSettings();
+            if (chaosGeneralSettings == null) return NoRestartNodes;
+            if (chaosGeneralSettings.PercentageNodesToStop <= 0) return NoRestartNodes;
 
-            return ClusterChaosManager.StopNodes(context.GetChaosSettings(), chaosSettings.PercentageNodesToStop);
+            return ClusterChaosManager.StopNodes(context.GetChaosSettings(), chaosGeneralSettings.PercentageNodesToStop);
         }
 
         private static SqlException CreateSqlException()

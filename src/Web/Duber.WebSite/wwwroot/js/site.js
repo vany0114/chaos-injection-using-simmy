@@ -59,7 +59,7 @@ var DuberWebSite = (function () {
     var _toChanged = (event) => {
         _to = event.currentTarget.value;
         _calcRoute();
-    }
+    };
 
     var _simulate = () => {
 
@@ -106,7 +106,7 @@ var DuberWebSite = (function () {
 
         var mapOptions = {
             zoom: 7
-        }
+        };
 
         _map = new google.maps.Map(document.getElementById('map'), mapOptions);
         _directionsDisplay.setMap(_map);

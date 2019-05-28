@@ -15,10 +15,12 @@ namespace Duber.Domain.ACL.Adapters
     {
         private readonly ResilientHttpClient _httpClient;
         private readonly string _paymentServiceBaseUrl;
+        private readonly GeneralChaosSetting _generalChaosSetting;
 
-        public PaymentServiceAdapter(ResilientHttpClient httpClient, string paymentServiceBaseUrl)
+        public PaymentServiceAdapter(ResilientHttpClient httpClient, string paymentServiceBaseUrl, GeneralChaosSetting generalChaosSetting)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _generalChaosSetting = generalChaosSetting ?? throw new ArgumentException(nameof(generalChaosSetting));
             _paymentServiceBaseUrl = !string.IsNullOrWhiteSpace(paymentServiceBaseUrl) ? paymentServiceBaseUrl : throw new ArgumentNullException(nameof(paymentServiceBaseUrl));
         }
 
@@ -30,8 +32,7 @@ namespace Duber.Domain.ACL.Adapters
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
 
-            // TODO: create polly context with settings from chaos api.
-            var context = new Context(OperationKeys.Payment.ToString()).WithChaosSettings(new GeneralChaosSetting());
+            var context = new Context(OperationKeys.PaymentApi.ToString()).WithChaosSettings(_generalChaosSetting);
             var response = await _httpClient.SendAsync(request, context);
 
             response.EnsureSuccessStatusCode();

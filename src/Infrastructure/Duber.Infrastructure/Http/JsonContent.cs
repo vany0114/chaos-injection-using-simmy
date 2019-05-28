@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Text;
 
-namespace Duber.WebSite.Infrastructure
+namespace Duber.Infrastructure.Http
 {
     public class JsonContent : StringContent
     {

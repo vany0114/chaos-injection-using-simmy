@@ -2,17 +2,19 @@
 {
     public enum OperationKeys
     {
-        Payment = 0,
-        GetTrip = 1,
-        TripCreate = 2,
-        TripAccept = 3,
-        TripStart = 4,
-        TripCancel = 5,
-        TripUpdateCurrentLocation = 6,
-        InvoiceGet = 7,
-        InvoiceGetByTrip = 8,
-        InvoicesGet = 9,
-        InvoiceCreate = 10,
-        WebSiteSqlDB = 11
+        PaymentApi = 0,
+        TripApiGet = 1,
+        TripApiCreate = 2,
+        TripApiAccept = 3,
+        TripApiStart = 4,
+        TripApiCancel = 5,
+        TripApiUpdateCurrentLocation = 6,
+        InvoiceDbOperations = 7,
+        ReportingDbAddTrip = 8,
+        ReportingDbUpdateTrip = 9,
+        ReportingDbGetTrip = 10,
+        ReportingDbGetTrips = 11,
+        ReportingDbGetTripsByUser = 12,
+        ReportingDbGetTripsByDriver = 13
     }
 }

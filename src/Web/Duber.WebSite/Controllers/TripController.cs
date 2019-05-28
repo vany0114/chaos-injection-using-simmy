@@ -9,10 +9,10 @@ using Duber.Domain.SharedKernel.Chaos;
 using Duber.Domain.User.Model;
 using Duber.Domain.User.Repository;
 using Duber.Infrastructure.Chaos;
+using Duber.Infrastructure.Http;
 using Duber.Infrastructure.Resilience.Http;
 using Duber.WebSite.Extensions;
 using Duber.WebSite.Hubs;
-using Duber.WebSite.Infrastructure;
 using Duber.WebSite.Infrastructure.Repository;
 using Duber.WebSite.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +33,7 @@ namespace Duber.WebSite.Controllers
         private readonly ResilientHttpClient _httpClient;
         private readonly IHubContext<TripHub> _hubContext;
         private readonly IDriverRepository _driverRepository;
+        private readonly GeneralChaosSetting _generalChaosSetting;
         private readonly IReportingRepository _reportingRepository;
         private readonly IOptions<TripApiSettings> _tripApiSettings;
         private readonly Dictionary<SelectListItem, LocationModel> _originsAndDestinations;
@@ -43,7 +44,8 @@ namespace Duber.WebSite.Controllers
             ResilientHttpClient httpClient,
             IOptions<TripApiSettings> tripApiSettings,
             IHubContext<TripHub> hubContext,
-            IReportingRepository reportingRepository)
+            IReportingRepository reportingRepository,
+            GeneralChaosSetting generalChaosSetting)
         {
             _userRepository = userRepository;
             _driverRepository = driverRepository;
@@ -52,6 +54,7 @@ namespace Duber.WebSite.Controllers
             _tripApiSettings = tripApiSettings;
             _hubContext = hubContext;
             _reportingRepository = reportingRepository;
+            _generalChaosSetting = generalChaosSetting;
 
             _originsAndDestinations = new Dictionary<SelectListItem, LocationModel>
             {
@@ -262,8 +265,7 @@ namespace Duber.WebSite.Controllers
                 })
             };
 
-            // TODO: create polly context with settings from chaos api.
-            var context = new Context(OperationKeys.TripCreate.ToString()).WithChaosSettings(new GeneralChaosSetting());
+            var context = new Context(OperationKeys.TripApiCreate.ToString()).WithChaosSettings(_generalChaosSetting);
             var response = await _httpClient.SendAsync(request, context);
 
             response.EnsureSuccessStatusCode();
@@ -278,9 +280,8 @@ namespace Duber.WebSite.Controllers
                 Content = new JsonContent(new { id = tripId.ToString() })
             };
 
-            // TODO: create polly context with settings from chaos api.
-            var operationKey = OperationKeys.TripStart.ToString().ToLower().Contains(action) ? OperationKeys.TripStart.ToString() : OperationKeys.TripAccept.ToString();
-            var context = new Context(operationKey).WithChaosSettings(new GeneralChaosSetting());
+            var operationKey = OperationKeys.TripApiStart.ToString().ToLower().Contains(action) ? OperationKeys.TripApiStart.ToString() : OperationKeys.TripApiAccept.ToString();
+            var context = new Context(operationKey).WithChaosSettings(_generalChaosSetting);
             var response = await _httpClient.SendAsync(request, context);
             response.EnsureSuccessStatusCode();
         }
@@ -297,8 +298,7 @@ namespace Duber.WebSite.Controllers
                 })
             };
 
-            // TODO: create polly context with settings from chaos api.
-            var context = new Context(OperationKeys.TripUpdateCurrentLocation.ToString()).WithChaosSettings(new GeneralChaosSetting());
+            var context = new Context(OperationKeys.TripApiUpdateCurrentLocation.ToString()).WithChaosSettings(_generalChaosSetting);
             var response = await _httpClient.SendAsync(request, context);
             response.EnsureSuccessStatusCode();
         }
