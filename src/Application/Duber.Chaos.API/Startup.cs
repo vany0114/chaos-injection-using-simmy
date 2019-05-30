@@ -27,7 +27,17 @@ namespace Duber.Chaos.API
                 .AddDistributedCache(Configuration, Environment)
                 .AddApplicationInsightsTelemetry(Configuration)
                 .AddRepository(Configuration)
-                .AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .AddMvc();
+
+            services.AddOptions()
+                .AddCors(options =>
+                {
+                    options.AddPolicy("CorsPolicy",
+                        builder => builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials());
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +48,7 @@ namespace Duber.Chaos.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("CorsPolicy");
             app.UseMvc();
 
             app.UseSwagger()

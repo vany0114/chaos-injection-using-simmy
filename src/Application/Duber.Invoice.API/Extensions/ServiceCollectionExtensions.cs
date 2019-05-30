@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Duber.Invoice.API.Extensions
 {
@@ -43,9 +44,9 @@ namespace Duber.Invoice.API.Extensions
             {
                 var mediator = provider.GetService<IMediator>();
                 var sqlExecutor = provider.GetService<IPolicyAsyncExecutor>();
-                var chaosSettings = provider.GetService<GeneralChaosSetting>();
+                var chaosSettingsFactory = provider.GetService<Lazy<Task<GeneralChaosSetting>>>();
                 var connectionString = configuration["ConnectionString"];
-                return new InvoiceContext(connectionString, mediator, sqlExecutor, chaosSettings);
+                return new InvoiceContext(connectionString, mediator, sqlExecutor, chaosSettingsFactory);
             });
 
             services.AddTransient<IInvoiceRepository, InvoiceRepository>();
@@ -109,8 +110,8 @@ namespace Duber.Invoice.API.Extensions
             {
                 var httpInvoker = provider.GetRequiredService<ResilientHttpClient>();
                 var paymentServiceBaseUrl = configuration["PaymentServiceBaseUrl"];
-                var chaosSettings = provider.GetService<GeneralChaosSetting>();
-                return new PaymentServiceAdapter(httpInvoker, paymentServiceBaseUrl, chaosSettings);
+                var chaosSettingsFactory = provider.GetService<Lazy<Task<GeneralChaosSetting>>>();
+                return new PaymentServiceAdapter(httpInvoker, paymentServiceBaseUrl, chaosSettingsFactory);
             });
 
             return services;

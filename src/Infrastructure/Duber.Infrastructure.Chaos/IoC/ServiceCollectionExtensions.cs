@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Duber.Infrastructure.Chaos.IoC
 {
@@ -14,15 +16,11 @@ namespace Duber.Infrastructure.Chaos.IoC
                 client.BaseAddress = new Uri(configuration.GetValue<string>("ChaosApiSettings:BaseUrl"));
             });
 
-            services.AddScoped<GeneralChaosSetting>(sp =>
+            services.AddScoped<Lazy<Task<GeneralChaosSetting>>>(sp =>
             {
-                // TODO: This gonna get the chaos settings from the api per request instead of injecting the httpClient in order to avoid get the settings every time an object is created and add too latency.
-                // Find a better way to get chaos settings per request...Another way migth be get settings directly from redis rather than api.
+                // we use LazyThreadSafetyMode.None in order to avoid locking.
                 var chaosApiHttpClient = sp.GetRequiredService<ChaosApiHttpClient>();
-                return chaosApiHttpClient.GetGeneralChaosSettings()
-                    .ConfigureAwait(false)
-                    .GetAwaiter()
-                    .GetResult();
+                return new Lazy<Task<GeneralChaosSetting>>(() => chaosApiHttpClient.GetGeneralChaosSettings(), LazyThreadSafetyMode.None);
             });
 
             return services;

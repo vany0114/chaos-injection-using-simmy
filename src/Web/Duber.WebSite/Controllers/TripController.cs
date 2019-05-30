@@ -33,7 +33,7 @@ namespace Duber.WebSite.Controllers
         private readonly ResilientHttpClient _httpClient;
         private readonly IHubContext<TripHub> _hubContext;
         private readonly IDriverRepository _driverRepository;
-        private readonly GeneralChaosSetting _generalChaosSetting;
+        private readonly Lazy<Task<GeneralChaosSetting>> _generalChaosSettingFactory;
         private readonly IReportingRepository _reportingRepository;
         private readonly IOptions<TripApiSettings> _tripApiSettings;
         private readonly Dictionary<SelectListItem, LocationModel> _originsAndDestinations;
@@ -45,7 +45,7 @@ namespace Duber.WebSite.Controllers
             IOptions<TripApiSettings> tripApiSettings,
             IHubContext<TripHub> hubContext,
             IReportingRepository reportingRepository,
-            GeneralChaosSetting generalChaosSetting)
+            Lazy<Task<GeneralChaosSetting>> generalChaosSettingFactory)
         {
             _userRepository = userRepository;
             _driverRepository = driverRepository;
@@ -54,7 +54,7 @@ namespace Duber.WebSite.Controllers
             _tripApiSettings = tripApiSettings;
             _hubContext = hubContext;
             _reportingRepository = reportingRepository;
-            _generalChaosSetting = generalChaosSetting;
+             _generalChaosSettingFactory = generalChaosSettingFactory;
 
             _originsAndDestinations = new Dictionary<SelectListItem, LocationModel>
             {
@@ -265,7 +265,7 @@ namespace Duber.WebSite.Controllers
                 })
             };
 
-            var context = new Context(OperationKeys.TripApiCreate.ToString()).WithChaosSettings(_generalChaosSetting);
+            var context = new Context(OperationKeys.TripApiCreate.ToString()).WithChaosSettings(await _generalChaosSettingFactory.Value);
             var response = await _httpClient.SendAsync(request, context);
 
             response.EnsureSuccessStatusCode();
@@ -281,7 +281,7 @@ namespace Duber.WebSite.Controllers
             };
 
             var operationKey = OperationKeys.TripApiStart.ToString().ToLower().Contains(action) ? OperationKeys.TripApiStart.ToString() : OperationKeys.TripApiAccept.ToString();
-            var context = new Context(operationKey).WithChaosSettings(_generalChaosSetting);
+            var context = new Context(operationKey).WithChaosSettings(await _generalChaosSettingFactory.Value);
             var response = await _httpClient.SendAsync(request, context);
             response.EnsureSuccessStatusCode();
         }
@@ -298,7 +298,7 @@ namespace Duber.WebSite.Controllers
                 })
             };
 
-            var context = new Context(OperationKeys.TripApiUpdateCurrentLocation.ToString()).WithChaosSettings(_generalChaosSetting);
+            var context = new Context(OperationKeys.TripApiUpdateCurrentLocation.ToString()).WithChaosSettings(await _generalChaosSettingFactory.Value);
             var response = await _httpClient.SendAsync(request, context);
             response.EnsureSuccessStatusCode();
         }

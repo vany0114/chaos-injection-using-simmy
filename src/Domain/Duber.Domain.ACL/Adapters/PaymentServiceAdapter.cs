@@ -15,12 +15,12 @@ namespace Duber.Domain.ACL.Adapters
     {
         private readonly ResilientHttpClient _httpClient;
         private readonly string _paymentServiceBaseUrl;
-        private readonly GeneralChaosSetting _generalChaosSetting;
+        private readonly Lazy<Task<GeneralChaosSetting>> _generalChaosSettingFactory;
 
-        public PaymentServiceAdapter(ResilientHttpClient httpClient, string paymentServiceBaseUrl, GeneralChaosSetting generalChaosSetting)
+        public PaymentServiceAdapter(ResilientHttpClient httpClient, string paymentServiceBaseUrl, Lazy<Task<GeneralChaosSetting>> generalChaosSettingFactory)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _generalChaosSetting = generalChaosSetting ?? throw new ArgumentException(nameof(generalChaosSetting));
+            _generalChaosSettingFactory = generalChaosSettingFactory ?? throw new ArgumentException(nameof(generalChaosSettingFactory));
             _paymentServiceBaseUrl = !string.IsNullOrWhiteSpace(paymentServiceBaseUrl) ? paymentServiceBaseUrl : throw new ArgumentNullException(nameof(paymentServiceBaseUrl));
         }
 
@@ -32,7 +32,7 @@ namespace Duber.Domain.ACL.Adapters
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
 
-            var context = new Context(OperationKeys.PaymentApi.ToString()).WithChaosSettings(_generalChaosSetting);
+            var context = new Context(OperationKeys.PaymentApi.ToString()).WithChaosSettings(await _generalChaosSettingFactory.Value);
             var response = await _httpClient.SendAsync(request, context);
 
             response.EnsureSuccessStatusCode();

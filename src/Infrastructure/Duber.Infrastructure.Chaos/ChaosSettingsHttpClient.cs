@@ -18,7 +18,9 @@ namespace Duber.Infrastructure.Chaos
         public async Task<GeneralChaosSetting> GetGeneralChaosSettings()
         {
             var response = await _client.GetAsync("/api/chaos/get");
-            response.EnsureSuccessStatusCode();
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return new GeneralChaosSetting();
+
             return JsonConvert.DeserializeObject<GeneralChaosSetting>(await response.Content.ReadAsStringAsync());
         }
 

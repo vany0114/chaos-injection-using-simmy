@@ -2,8 +2,6 @@
 using Duber.Domain.Driver.Repository;
 using Duber.Domain.User.Persistence;
 using Duber.Domain.User.Repository;
-using Duber.Infrastructure.Chaos;
-using Duber.Infrastructure.Chaos.IoC;
 using Duber.Infrastructure.Resilience.Abstractions;
 using Duber.Infrastructure.Resilience.Http;
 using Duber.Infrastructure.Resilience.Sql;

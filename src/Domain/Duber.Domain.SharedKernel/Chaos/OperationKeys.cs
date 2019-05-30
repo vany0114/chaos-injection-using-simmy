@@ -10,11 +10,5 @@
         TripApiCancel = 5,
         TripApiUpdateCurrentLocation = 6,
         InvoiceDbOperations = 7,
-        ReportingDbAddTrip = 8,
-        ReportingDbUpdateTrip = 9,
-        ReportingDbGetTrip = 10,
-        ReportingDbGetTrips = 11,
-        ReportingDbGetTripsByUser = 12,
-        ReportingDbGetTripsByDriver = 13
     }
 }
