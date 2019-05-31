@@ -97,10 +97,10 @@ namespace Duber.Invoice.API
             {
                 // We only want to add Simmy chaos injection in stage or prod environments in order to test out our resiliency.
                 // Wrap every policy in the policy registry in Simmy chaos injectors.
-                var httpPoliciesRegistry = app.ApplicationServices.GetRequiredService<IPolicyRegistry<string>>();
-                var sqlPoliciesRegistry = app.ApplicationServices.GetRequiredService<IPolicyAsyncExecutor>();
-                httpPoliciesRegistry?.AddHttpChaosInjectors();
-                sqlPoliciesRegistry.PolicyRegistry.AddChaosInjectors();
+                var httpPolicyRegistry = app.ApplicationServices.GetRequiredService<IPolicyRegistry<string>>();
+                var sqlPolicyExecutor = app.ApplicationServices.GetRequiredService<IPolicyAsyncExecutor>();
+                httpPolicyRegistry?.AddHttpChaosInjectors();
+                sqlPolicyExecutor?.PolicyRegistry?.AddChaosInjectors();
             }
 
             app.UseCors("CorsPolicy");

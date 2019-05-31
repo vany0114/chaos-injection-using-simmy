@@ -11,39 +11,43 @@ namespace Duber.Infrastructure.Resilience.Abstractions
     /// </summary>
     public class PolicySyncExecutor : IPolicySyncExecutor
     {
+        private const string POLICY_KEY = "MainPolicySyncExecutor";
         private readonly IEnumerable<ISyncPolicy> _syncPolicies;
 
         public PolicyRegistry PolicyRegistry { get; set; }
 
         public PolicySyncExecutor(IEnumerable<ISyncPolicy> policies)
         {
-            PolicyRegistry = new PolicyRegistry();
             _syncPolicies = policies ?? throw new ArgumentNullException(nameof(policies));
-            (_syncPolicies as List<ISyncPolicy>).ForEach(policy => PolicyRegistry.Add(policy.PolicyKey, policy));
+
+            PolicyRegistry = new PolicyRegistry
+            {
+                [nameof(PolicySyncExecutor)] = Policy.Wrap(_syncPolicies.ToArray()).WithPolicyKey(POLICY_KEY)
+            };
         }
 
         public T Execute<T>(Func<T> action)
         {
-            var policyWrap = Policy.Wrap(_syncPolicies.ToArray());
-            return policyWrap.Execute(action);
+            var policy = PolicyRegistry.Get<ISyncPolicy>(POLICY_KEY);
+            return policy.Execute(action);
         }
 
         public void Execute(Action action)
         {
-            var policyWrap = Policy.Wrap(_syncPolicies.ToArray());
-            policyWrap.Execute(action);
+            var policy = PolicyRegistry.Get<ISyncPolicy>(POLICY_KEY);
+            policy.Execute(action);
         }
 
         public T Execute<T>(Func<Context, T> action, Context context)
         {
-            var policyWrap = Policy.Wrap(_syncPolicies.ToArray());
-            return policyWrap.Execute(action, context);
+            var policy = PolicyRegistry.Get<ISyncPolicy>(POLICY_KEY);
+            return policy.Execute(action, context);
         }
 
         public void Execute(Action<Context> action, Context context)
         {
-            var policyWrap = Policy.Wrap(_syncPolicies.ToArray());
-            policyWrap.Execute(action, context);
+            var policy = PolicyRegistry.Get<ISyncPolicy>(POLICY_KEY);
+            policy.Execute(action, context);
         }
     }
 }
