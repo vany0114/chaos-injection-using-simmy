@@ -28,6 +28,7 @@ namespace Duber.WebSite.Controllers
 {
     public class TripController : Controller
     {
+        private GeneralChaosSetting _generalChaosSetting;
         private readonly IMemoryCache _cache;
         private readonly IUserRepository _userRepository;
         private readonly ResilientHttpClient _httpClient;
@@ -104,32 +105,28 @@ namespace Duber.WebSite.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState.AllErrors());
 
-            var createdTask = CreateTrip(model);
-            var createdNotificationTask = _hubContext.Clients.All.SendAsync("NotifyTrip", "Created");
-            await Task.WhenAll(createdTask, createdNotificationTask);
-            var tripID = await createdTask;
+            _generalChaosSetting = await _generalChaosSettingFactory.Value;
+           
+            var tripID = await CreateTrip(model);
+            await _hubContext.Clients.All.SendAsync("NotifyTrip", "Created");
 
-            var acceptedTask = AcceptOrStartTrip(_tripApiSettings.Value.AcceptUrl, tripID);
-            var acceptedNotificationTask = _hubContext.Clients.All.SendAsync("NotifyTrip", "Accepted");
-            await Task.WhenAll(acceptedTask, acceptedNotificationTask);
+            await AcceptOrStartTrip(_tripApiSettings.Value.AcceptUrl, tripID);
+            await _hubContext.Clients.All.SendAsync("NotifyTrip", "Accepted");
 
-            var startedTask = AcceptOrStartTrip(_tripApiSettings.Value.StartUrl, tripID);
-            var startedNotificationTask = _hubContext.Clients.All.SendAsync("NotifyTrip", "Started");
-            await Task.WhenAll(startedTask, startedNotificationTask);
+            await AcceptOrStartTrip(_tripApiSettings.Value.StartUrl, tripID);
+            await _hubContext.Clients.All.SendAsync("NotifyTrip", "Started");
 
-            var updatedPositionTasks = new List<Task>();
             for (var index = 0; index < model.Directions.Count; index += 5)
             {
                 var direction = model.Directions[index];
                 if (index + 5 >= model.Directions.Count)
                     direction = _originsAndDestinations.Values.SingleOrDefault(x => x.Description == model.To);
 
-                updatedPositionTasks.Add(UpdateTripLocation(tripID, direction));
-                updatedPositionTasks.Add(_hubContext.Clients.All.SendAsync("UpdateCurrentPosition", direction));
+                await UpdateTripLocation(tripID, direction);
+                await _hubContext.Clients.All.SendAsync("UpdateCurrentPosition", direction);
             }
 
-            updatedPositionTasks.Add(_hubContext.Clients.All.SendAsync("NotifyTrip", "Finished"));
-            await Task.WhenAll(updatedPositionTasks);
+            await _hubContext.Clients.All.SendAsync("NotifyTrip", "Finished");
 
             return Ok();
         }
@@ -265,7 +262,7 @@ namespace Duber.WebSite.Controllers
                 })
             };
 
-            var context = new Context(OperationKeys.TripApiCreate.ToString()).WithChaosSettings(await _generalChaosSettingFactory.Value);
+            var context = new Context(OperationKeys.TripApiCreate.ToString()).WithChaosSettings(_generalChaosSetting);
             var response = await _httpClient.SendAsync(request, context);
 
             response.EnsureSuccessStatusCode();
@@ -280,8 +277,8 @@ namespace Duber.WebSite.Controllers
                 Content = new JsonContent(new { id = tripId.ToString() })
             };
 
-            var operationKey = OperationKeys.TripApiStart.ToString().ToLower().Contains(action) ? OperationKeys.TripApiStart.ToString() : OperationKeys.TripApiAccept.ToString();
-            var context = new Context(operationKey).WithChaosSettings(await _generalChaosSettingFactory.Value);
+            var operationKey = action == "Started" ? OperationKeys.TripApiStart.ToString() : OperationKeys.TripApiAccept.ToString();
+            var context = new Context(operationKey).WithChaosSettings(_generalChaosSetting);
             var response = await _httpClient.SendAsync(request, context);
             response.EnsureSuccessStatusCode();
         }
@@ -298,7 +295,7 @@ namespace Duber.WebSite.Controllers
                 })
             };
 
-            var context = new Context(OperationKeys.TripApiUpdateCurrentLocation.ToString()).WithChaosSettings(await _generalChaosSettingFactory.Value);
+            var context = new Context(OperationKeys.TripApiUpdateCurrentLocation.ToString()).WithChaosSettings(_generalChaosSetting);
             var response = await _httpClient.SendAsync(request, context);
             response.EnsureSuccessStatusCode();
         }

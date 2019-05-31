@@ -32,7 +32,8 @@ namespace Duber.Domain.ACL.Adapters
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
 
-            var context = new Context(OperationKeys.PaymentApi.ToString()).WithChaosSettings(await _generalChaosSettingFactory.Value);
+            var chaosSettings = await _generalChaosSettingFactory.Value;
+            var context = new Context(OperationKeys.PaymentApi.ToString()).WithChaosSettings(chaosSettings);
             var response = await _httpClient.SendAsync(request, context);
 
             response.EnsureSuccessStatusCode();

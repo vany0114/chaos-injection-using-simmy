@@ -24,7 +24,6 @@ namespace Duber.Infrastructure.Chaos
         private static readonly Task<Exception> NoExceptionResult = Task.FromResult<Exception>(null);
         private static readonly Task<HttpResponseMessage> NoHttpResponse = Task.FromResult<HttpResponseMessage>(null);
         private static readonly Task<TimeSpan> NoLatency = Task.FromResult(TimeSpan.Zero);
-        private static readonly Task NoRestartNodes = Task.CompletedTask;
 
         private static OperationChaosSetting GetOperationChaosSettings(this Context context) => context.GetChaosSettings()?.GetSettingsFor(context.OperationKey);
 
@@ -218,8 +217,8 @@ namespace Duber.Infrastructure.Chaos
         private static Task RestartNodes(Context context, CancellationToken token)
         {
             var chaosGeneralSettings = context.GetChaosSettings();
-            if (chaosGeneralSettings == null) return NoRestartNodes;
-            if (chaosGeneralSettings.PercentageNodesToRestart <= 0) return NoRestartNodes;
+            if (chaosGeneralSettings == null) return NoHttpResponse;
+            if (chaosGeneralSettings.PercentageNodesToRestart <= 0) return NoHttpResponse;
 
             return ClusterChaosManager.RestartNodes(context.GetChaosSettings(), chaosGeneralSettings.PercentageNodesToRestart);
         }
@@ -227,8 +226,8 @@ namespace Duber.Infrastructure.Chaos
         private static Task StopNodes(Context context, CancellationToken token)
         {
             var chaosGeneralSettings = context.GetChaosSettings();
-            if (chaosGeneralSettings == null) return NoRestartNodes;
-            if (chaosGeneralSettings.PercentageNodesToStop <= 0) return NoRestartNodes;
+            if (chaosGeneralSettings == null) return NoHttpResponse;
+            if (chaosGeneralSettings.PercentageNodesToStop <= 0) return NoHttpResponse;
 
             return ClusterChaosManager.StopNodes(context.GetChaosSettings(), chaosGeneralSettings.PercentageNodesToStop);
         }

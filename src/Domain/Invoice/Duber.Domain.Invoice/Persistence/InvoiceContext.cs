@@ -63,7 +63,8 @@ namespace Duber.Domain.Invoice.Persistence
 
         private async Task SetMonkeyContext()
         {
-            _context = new Context(OperationKeys.InvoiceDbOperations.ToString()).WithChaosSettings(await _generalChaosSettingFactory.Value);
+            var chaosSettings = await _generalChaosSettingFactory.Value;
+            _context = new Context(OperationKeys.InvoiceDbOperations.ToString()).WithChaosSettings(chaosSettings);
         }
 
         private IDbConnection GetOpenConnection()
