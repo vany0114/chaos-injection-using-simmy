@@ -12,7 +12,6 @@ namespace Duber.Infrastructure.Resilience.Abstractions
     /// </summary>
     public class PolicyAsyncExecutor : IPolicyAsyncExecutor
     {
-        private const string POLICY_KEY = "MainPolicyAsyncExecutor";
         private readonly IEnumerable<IAsyncPolicy> _asyncPolicies;
 
         public PolicyRegistry PolicyRegistry { get; set; }
@@ -23,31 +22,31 @@ namespace Duber.Infrastructure.Resilience.Abstractions
 
             PolicyRegistry = new PolicyRegistry
             {
-                [nameof(PolicyAsyncExecutor)] = Policy.WrapAsync(_asyncPolicies.ToArray()).WithPolicyKey(POLICY_KEY)
+                [nameof(PolicyAsyncExecutor)] = Policy.WrapAsync(_asyncPolicies.ToArray())
             };
         }
 
         public async Task<T> ExecuteAsync<T>(Func<Task<T>> action)
         {
-            var policy = PolicyRegistry.Get<IAsyncPolicy>(POLICY_KEY);
+            var policy = PolicyRegistry.Get<IAsyncPolicy>(nameof(PolicyAsyncExecutor));
             return await policy.ExecuteAsync(action);
         }
 
         public async Task ExecuteAsync(Func<Task> action)
         {
-            var policy = PolicyRegistry.Get<IAsyncPolicy>(POLICY_KEY);
+            var policy = PolicyRegistry.Get<IAsyncPolicy>(nameof(PolicyAsyncExecutor));
             await policy.ExecuteAsync(action);
         }
 
         public async Task<T> ExecuteAsync<T>(Func<Context, Task<T>> action, Context context)
         {
-            var policy = PolicyRegistry.Get<IAsyncPolicy>(POLICY_KEY);
+            var policy = PolicyRegistry.Get<IAsyncPolicy>(nameof(PolicyAsyncExecutor));
             return await policy.ExecuteAsync(action, context);
         }
 
         public async Task ExecuteAsync(Func<Context, Task> action, Context context)
         {
-            var policy = PolicyRegistry.Get<IAsyncPolicy>(POLICY_KEY);
+            var policy = PolicyRegistry.Get<IAsyncPolicy>(nameof(PolicyAsyncExecutor));
             await policy.ExecuteAsync(action, context);
         }
     }

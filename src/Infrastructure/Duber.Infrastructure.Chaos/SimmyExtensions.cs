@@ -38,9 +38,6 @@ namespace Duber.Infrastructure.Chaos
         {
             foreach (var policyEntry in registry)
             {
-                if (policyEntry.Value is IMonkeyPolicy<HttpResponseMessage>)
-                    continue;
-
                 if (policyEntry.Value is IAsyncPolicy<HttpResponseMessage> policy)
                 {
                     registry[policyEntry.Key] = policy
@@ -56,11 +53,11 @@ namespace Duber.Infrastructure.Chaos
                                 GetLatency,
                                 GetInjectionRate,
                                 GetEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync(
+                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync<HttpResponseMessage>(
                                 (ctx, ct) => RestartNodes(ctx, ct),
                                 GetInjectionRate,
                                 GetEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync(
+                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync<HttpResponseMessage>(
                                 (ctx, ct) => StopNodes(ctx, ct),
                                 GetInjectionRate,
                                 GetEnabled));
@@ -79,10 +76,7 @@ namespace Duber.Infrastructure.Chaos
         public static IPolicyRegistry<string> AddChaosInjectors<T>(this IPolicyRegistry<string> registry)
         {
             foreach (var policyEntry in registry)
-            {
-                if (policyEntry.Value is IMonkeyPolicy<T> || policyEntry.Value is IAsyncPolicy<HttpResponseMessage>)
-                    continue;
-
+            {                
                 if (policyEntry.Value is IAsyncPolicy<T> policy)
                 {
                     registry[policyEntry.Key] = policy
@@ -118,9 +112,6 @@ namespace Duber.Infrastructure.Chaos
         {
             foreach (var policyEntry in registry)
             {
-                if (policyEntry.Value is IMonkeyPolicy || policyEntry.Value is IAsyncPolicy<HttpResponseMessage>)
-                    continue;
-
                 if (policyEntry.Value is IAsyncPolicy policy)
                 {
                     registry[policyEntry.Key] = policy
