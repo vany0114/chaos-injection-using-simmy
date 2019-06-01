@@ -277,7 +277,7 @@ namespace Duber.WebSite.Controllers
                 Content = new JsonContent(new { id = tripId.ToString() })
             };
 
-            var operationKey = action == "Started" ? OperationKeys.TripApiStart.ToString() : OperationKeys.TripApiAccept.ToString();
+            var operationKey = action.Contains("start") ? OperationKeys.TripApiStart.ToString() : OperationKeys.TripApiAccept.ToString();
             var context = new Context(operationKey).WithChaosSettings(_generalChaosSetting);
             var response = await _httpClient.SendAsync(request, context);
             response.EnsureSuccessStatusCode();
