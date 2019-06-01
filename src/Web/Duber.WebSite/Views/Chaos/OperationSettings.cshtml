@@ -1,0 +1,71 @@
+﻿@using Duber.Infrastructure.Chaos
+@model OperationChaosSetting
+
+@{
+    ViewData["Title"] = "Operation Chaos Settings";
+    var operationKeys = ViewData["OperationKeys"] as List<SelectListItem>;
+    var httpStatusCodes = ViewData["HttpStatusCodes"] as List<SelectListItem>;
+}
+
+<h2>Operation Chaos Settings</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post">
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+            <input type="hidden" asp-for="Id"  />
+            
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="OperationKey">Operation</label>
+                    <select style="width: 100%" asp-for="OperationKey" asp-items="@operationKeys" class="form-control"></select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Duration"></label>
+                    <input asp-for="Duration" type="time" class="form-control" placeholder="Optional" value="@Model.Duration" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="InjectionRate">Injection Rate</label>
+                    <input asp-for="InjectionRate" type="number" class="form-control" min="0" max="1" value="@Model.InjectionRate" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="LatencyMs">Latency (MS)</label>
+                    <input asp-for="LatencyMs" type="number" class="form-control" min="0" value="@Model.LatencyMs" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Exception"></label>
+                    <input asp-for="Exception" type="text" class="form-control" value="@Model.Exception" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="StatusCode">Status Code</label>
+                    <select style="width: 100%" asp-for="StatusCode" asp-items="@httpStatusCodes" value="@Model.StatusCode" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input asp-for="Enabled" type="checkbox" class="form-check-input" />
+                    <label asp-for="Enabled"></label>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <button asp-controller="Chaos" asp-action="AddOrUpdateOperationSettings" class="btn btn-primary">Save</button>
+                    <button asp-controller="Chaos" asp-action="Index" class="btn btn-default" formnovalidate formmethod="get" >Back</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

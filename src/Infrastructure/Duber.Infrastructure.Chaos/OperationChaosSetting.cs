@@ -5,6 +5,8 @@ namespace Duber.Infrastructure.Chaos
     [Serializable]
     public class OperationChaosSetting
     {
+        public Guid Id { get; set; }
+
         public string OperationKey { get; set; }
 
         public bool Enabled { get; set; }

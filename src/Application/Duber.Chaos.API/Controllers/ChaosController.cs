@@ -61,12 +61,6 @@ namespace Duber.Chaos.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task Post([FromBody] GeneralChaosSetting settings)
         {
-            if(settings.AutomaticChaosInjectionEnabled && (settings.Frecuency == default || settings.Frecuency == TimeSpan.MinValue))
-            {
-                // TODO: consider return a bad request with an error description.
-                settings.AutomaticChaosInjectionEnabled = false;
-            }
-
             await _chaosRepository.UpdateChaosSettings(settings);
         }
     }

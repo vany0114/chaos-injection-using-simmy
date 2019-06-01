@@ -1,6 +1,7 @@
 ﻿using Duber.Infrastructure.Http;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace Duber.Infrastructure.Chaos
         {
             var response = await _client.GetAsync("/api/chaos/get");
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                return new GeneralChaosSetting();
+                return new GeneralChaosSetting { OperationChaosSettings = new List<OperationChaosSetting>() };
 
             return JsonConvert.DeserializeObject<GeneralChaosSetting>(await response.Content.ReadAsStringAsync());
         }

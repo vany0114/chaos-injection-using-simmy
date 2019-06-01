@@ -1,0 +1,53 @@
+﻿@using Duber.Infrastructure.Chaos
+@model List<OperationChaosSetting>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Operations Chaos Settings</div>
+    <div class="panel-body">
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <button asp-controller="Chaos" asp-action="AddOperationSettings" class="btn btn-primary" formmethod="get" formnovalidate>New</button>
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Operation
+                    </th>
+                    <th>
+                        Enabled
+                    </th>
+                    <th>
+                        Injection Rate
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model?.Count(); i++)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => m[i].OperationKey)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => m[i].Enabled)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => m[i].InjectionRate)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Update", "UpdateOperationSettings", new { operationKey = Model[i].OperationKey })
+                        </td>
+                        <td>
+                            @Html.ActionLink("Delete", "DeleteOperationSettings", new { operationKey = Model[i].OperationKey })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

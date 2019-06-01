@@ -1,0 +1,95 @@
+﻿@model GeneralChaosSettingViewModel
+
+@{
+    ViewData["Title"] = "Chaos Settings";
+}
+
+<h2>Chaos Settings</h2>
+
+<form method="post">
+    <div class="panel panel-default">
+        <div class="panel-heading">General Chaos Settings</div>
+        <div class="panel-body">
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <input asp-for="AutomaticChaosInjectionEnabled" type="checkbox" class="automatic-chaos-injection" value="@Model.AutomaticChaosInjectionEnabled" />
+                    <label asp-for="AutomaticChaosInjectionEnabled">Enable Automatic Chaos Injection</label>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Frecuency"></label>
+                    <input asp-for="Frecuency" type="time" class="form-control frecuency" value="@Model.Frecuency" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="MaxDuration">Max Duration</label>
+                    <input asp-for="MaxDuration" type="time" class="form-control max-duration" value="@Model.MaxDuration" />
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                <hr />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <input asp-for="ClusterChaosEnabled" type="checkbox" class="cluster-chaos" value="@Model.ClusterChaosEnabled" />
+                    <label asp-for="ClusterChaosEnabled">Enable Cluster Chaos</label>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="PercentageNodesToRestart">Percentage Nodes To Restart</label>
+                    <input asp-for="PercentageNodesToRestart" type="number" class="form-control nodes-to-restart" value="@Model.PercentageNodesToRestart" min="0" max="100" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="PercentageNodesToStop">Percentage Nodes To Stop</label>
+                    <input asp-for="PercentageNodesToStop" type="number" class="form-control nodes-to-stop" value="@Model.PercentageNodesToStop" min="0" max="100" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <button asp-controller="Chaos" asp-action="UpdateGeneralSettings" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @{
+        await Html.RenderPartialAsync("_OperationSettingsList", Model?.OperationChaosSettings);
+    }
+</form>
+
+@* Once again, sorry for this UGLY js *@
+@section Scripts {
+    <script>
+        window.onload = function () {
+            $(".automatic-chaos-injection").change(automaticChaosInjectionChanged);
+            $(".cluster-chaos").change(clusterChaosChanged);
+            $(".automatic-chaos-injection").trigger("change");
+            $(".cluster-chaos").trigger("change");
+        };
+
+        let automaticChaosInjectionChanged = (event) => {
+            var enable = true;
+            if (event.currentTarget.checked == false) {
+                $(".frecuency").val(0);
+                $(".max-duration").val(0);
+                enable = false;
+            }
+
+            $(".frecuency").prop("disabled", !enable);
+            $(".max-duration").prop("disabled", !enable);
+        };
+
+        let clusterChaosChanged = (event) => {
+            var enable = true;
+            if (event.currentTarget.checked == false) {
+                $(".nodes-to-restart").val(0);
+                $(".nodes-to-stop").val(0);
+                enable = false;
+            }
+
+            $(".nodes-to-restart").prop("disabled", !enable);
+            $(".nodes-to-stop").prop("disabled", !enable);
+        };
+    </script>
+}

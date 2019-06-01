@@ -21,46 +21,30 @@
     <div class="panel-heading">Configure your trip</div>
     <div class="panel-body">
 
-        <div class="row">
-            <div class="col-md-6">
+        <div class="form-row">
+            <div class="form-group col-md-6">
                 <label asp-for="User"></label>
+                <select style="width: 100%" asp-for="User" asp-items="Model.Users" class="form-control"></select>
             </div>
-            <div class="col-md-6">
+            <div class="form-group col-md-6">
                 <label asp-for="Driver"></label>
+                <select style="width: 100%" asp-for="Driver" asp-items="Model.Drivers" class="form-control"></select>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <select style="width: 100%" asp-for="User" asp-items="Model.Users"></select>
-            </div>
-            <div class="col-md-6">
-                <select style="width: 100%" asp-for="Driver" asp-items="Model.Drivers"></select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
+        <div class="form-row">
+            <div class="form-group col-md-6">
                 <label asp-for="From"></label>
+                <select class="trip-from form-control" asp-for="From" asp-items="Model.Origins"></select>
             </div>
-            <div class="col-md-6">
+            <div class="form-group col-md-6">
                 <label asp-for="To"></label>
+                <select class="trip-to form-control" asp-for="To" asp-items="Model.Destinations"></select>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <select style="width: 100%" class="trip-from" asp-for="From" asp-items="Model.Origins"></select>
-            </div>
-            <div class="col-md-6">
-                <select style="width: 100%" class="trip-to" asp-for="To" asp-items="Model.Destinations"></select>
-            </div>
-        </div>
-
-        <br />
-
-        <div class="row">
-            <div class="col-md-12">
+        <div class="form-row">
+            <div class="form-group col-md-12">
                 <button id="simulate" class="btn btn-primary">Simulate</button>
             </div>
         </div>
