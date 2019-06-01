@@ -1,6 +1,8 @@
 ﻿@using Duber.Infrastructure.Chaos
 @model List<OperationChaosSetting>
 
+
+
 <div class="panel panel-default">
     <div class="panel-heading">Operations Chaos Settings</div>
     <div class="panel-body">
@@ -43,7 +45,13 @@
                             @Html.ActionLink("Update", "UpdateOperationSettings", new { operationKey = Model[i].OperationKey })
                         </td>
                         <td>
-                            @Html.ActionLink("Delete", "DeleteOperationSettings", new { operationKey = Model[i].OperationKey })
+                            @{
+                                var parms = new Dictionary<string, string>
+                                                {
+                                    { "operationKey", Model[i].OperationKey }
+                                };
+                            }
+                            <button asp-controller="Chaos" asp-action="DeleteOperationSettings" asp-all-route-data="@parms" type="submit" class="btn-link" formmethod="post" formnovalidate>Delete</button>
                         </td>
                     </tr>
                 }

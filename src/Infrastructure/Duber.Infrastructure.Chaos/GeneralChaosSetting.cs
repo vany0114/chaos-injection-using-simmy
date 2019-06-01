@@ -7,6 +7,10 @@ namespace Duber.Infrastructure.Chaos
     [Serializable]
     public class GeneralChaosSetting
     {
+        public bool AutomaticChaosInjectionEnabled { get; set; }
+
+        public bool ClusterChaosEnabled { get; set; }
+
         public TimeSpan Frecuency { get; set; }
 
         public TimeSpan MaxDuration { get; set; }

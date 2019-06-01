@@ -13,7 +13,7 @@
 
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <input asp-for="AutomaticChaosInjectionEnabled" type="checkbox" class="automatic-chaos-injection" value="@Model.AutomaticChaosInjectionEnabled" />
+                    <input asp-for="AutomaticChaosInjectionEnabled" type="checkbox" class="automatic-chaos-injection" />
                     <label asp-for="AutomaticChaosInjectionEnabled">Enable Automatic Chaos Injection</label>
                 </div>
                 <div class="form-group col-md-4">
@@ -32,7 +32,7 @@
 
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <input asp-for="ClusterChaosEnabled" type="checkbox" class="cluster-chaos" value="@Model.ClusterChaosEnabled" />
+                    <input asp-for="ClusterChaosEnabled" type="checkbox" class="cluster-chaos" />
                     <label asp-for="ClusterChaosEnabled">Enable Cluster Chaos</label>
                 </div>
                 <div class="form-group col-md-4">
@@ -71,25 +71,21 @@
         let automaticChaosInjectionChanged = (event) => {
             var enable = true;
             if (event.currentTarget.checked == false) {
-                $(".frecuency").val(0);
-                $(".max-duration").val(0);
                 enable = false;
             }
 
-            $(".frecuency").prop("disabled", !enable);
-            $(".max-duration").prop("disabled", !enable);
+            $(".frecuency").prop("readonly", !enable);
+            $(".max-duration").prop("readonly", !enable);
         };
 
         let clusterChaosChanged = (event) => {
             var enable = true;
             if (event.currentTarget.checked == false) {
-                $(".nodes-to-restart").val(0);
-                $(".nodes-to-stop").val(0);
                 enable = false;
             }
 
-            $(".nodes-to-restart").prop("disabled", !enable);
-            $(".nodes-to-stop").prop("disabled", !enable);
+            $(".nodes-to-restart").prop("readonly", !enable);
+            $(".nodes-to-stop").prop("readonly", !enable);
         };
     </script>
 }

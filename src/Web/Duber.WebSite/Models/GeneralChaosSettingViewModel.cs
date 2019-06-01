@@ -12,18 +12,14 @@ namespace Duber.WebSite.Models
 
         public GeneralChaosSettingViewModel(GeneralChaosSetting setting)
         {
-            AutomaticChaosInjectionEnabled = setting.Frecuency.TotalMilliseconds > 0 || setting.MaxDuration.TotalMilliseconds > 0;
+            AutomaticChaosInjectionEnabled = setting.AutomaticChaosInjectionEnabled;
             MaxDuration = setting.MaxDuration;
             Frecuency = setting.Frecuency;
             PercentageNodesToRestart = setting.PercentageNodesToRestart;
             PercentageNodesToStop = setting.PercentageNodesToStop;
             OperationChaosSettings = setting.OperationChaosSettings;
-            ClusterChaosEnabled = setting.PercentageNodesToStop > 0 || setting.PercentageNodesToRestart > 0;
+            ClusterChaosEnabled = setting.ClusterChaosEnabled;
         }
-
-        public bool AutomaticChaosInjectionEnabled { get; set; }
-
-        public bool ClusterChaosEnabled { get; set; }
 
         public List<SelectListItem> OperationKeys { get; set; }
 

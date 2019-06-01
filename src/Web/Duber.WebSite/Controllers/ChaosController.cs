@@ -82,7 +82,7 @@ namespace Duber.WebSite.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> DeleteOperationSettings(string operationKey)
         {
             var chaosSettings = await _httpClient.GetGeneralChaosSettings();
