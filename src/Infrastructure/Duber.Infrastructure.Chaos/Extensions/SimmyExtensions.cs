@@ -218,6 +218,7 @@ namespace Duber.Infrastructure.Chaos
         {
             var chaosGeneralSettings = context.GetChaosSettings();
             if (chaosGeneralSettings == null) return NoHttpResponse;
+            if (chaosGeneralSettings.ClusterChaosEnabled == false) return NoHttpResponse;
             if (chaosGeneralSettings.PercentageNodesToRestart <= 0) return NoHttpResponse;
 
             return ClusterChaosManager.RestartNodes(context.GetChaosSettings(), chaosGeneralSettings.PercentageNodesToRestart);
@@ -227,6 +228,7 @@ namespace Duber.Infrastructure.Chaos
         {
             var chaosGeneralSettings = context.GetChaosSettings();
             if (chaosGeneralSettings == null) return NoHttpResponse;
+            if (chaosGeneralSettings.ClusterChaosEnabled == false) return NoHttpResponse;
             if (chaosGeneralSettings.PercentageNodesToStop <= 0) return NoHttpResponse;
 
             return ClusterChaosManager.StopNodes(context.GetChaosSettings(), chaosGeneralSettings.PercentageNodesToStop);

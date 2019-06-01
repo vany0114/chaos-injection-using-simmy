@@ -5,6 +5,7 @@
 }
 
 <h2>Chaos Settings</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
 
 <form method="post">
     <div class="panel panel-default">
@@ -17,12 +18,12 @@
                     <label asp-for="AutomaticChaosInjectionEnabled">Enable Automatic Chaos Injection</label>
                 </div>
                 <div class="form-group col-md-4">
-                    <label asp-for="Frecuency"></label>
-                    <input asp-for="Frecuency" type="time" class="form-control frecuency" value="@Model.Frecuency" />
+                    <label asp-for="Frequency"></label>
+                    <input asp-for="Frequency" type="time" class="form-control frecuency" value="@Model.Frequency" min="00:15" />
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="MaxDuration">Max Duration</label>
-                    <input asp-for="MaxDuration" type="time" class="form-control max-duration" value="@Model.MaxDuration" />
+                    <input asp-for="MaxDuration" type="time" class="form-control max-duration" value="@Model.MaxDuration" min="00:05" max="01:00" />
                 </div>
             </div>
 

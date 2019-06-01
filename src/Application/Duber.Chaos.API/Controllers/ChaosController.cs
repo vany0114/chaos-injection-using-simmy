@@ -39,7 +39,10 @@ namespace Duber.Chaos.API.Controllers
             if (chaosSettings == null)
                 return NotFound();
 
-            // TODO: consider get these values from Azure KeyVault.
+            if (chaosSettings.ExecutionInformation == null)
+                chaosSettings.ExecutionInformation = new ExecutionInformation();
+
+            // TODO: consider getting these values from Azure KeyVault.
             chaosSettings.SubscriptionId = _azureSettings.Value.SubscriptionId;
             chaosSettings.ClientId = _azureSettings.Value.ClientId;
             chaosSettings.ClientKey = _azureSettings.Value.ClientKey;
@@ -56,12 +59,18 @@ namespace Duber.Chaos.API.Controllers
         /// <response code="204">No content.</response>
         [Route("update")]
         [HttpPost]
-        [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.NoContent)]
+        [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task Post([FromBody] GeneralChaosSetting settings)
+        public async Task<IActionResult> Post([FromBody] GeneralChaosSetting settings)
         {
+            if (settings.MaxDuration > settings.Frequency)
+            {
+                return BadRequest("Duration should be less than Frequency.");
+            }
+
             await _chaosRepository.UpdateChaosSettings(settings);
+            return Ok();
         }
     }
 }

@@ -49,9 +49,16 @@ namespace Duber.WebSite.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateGeneralSettings(GeneralChaosSettingViewModel viewModel)
         {
+            if(viewModel.MaxDuration > viewModel.Frequency)
+            {
+                ModelState.AddModelError("MaxDuration", "Duration should be less than Frequency.");
+                return View("Index", viewModel);
+            }
+
             var chaosSettings = viewModel as GeneralChaosSetting;
             var originalSettings = await _httpClient.GetGeneralChaosSettings();
             chaosSettings.OperationChaosSettings = originalSettings.OperationChaosSettings;
+            chaosSettings.ExecutionInformation = originalSettings.ExecutionInformation;
 
             await _httpClient.UpdateGeneralChaosSettings(chaosSettings);
             return RedirectToAction("Index");

@@ -14,7 +14,7 @@ namespace Duber.WebSite.Models
         {
             AutomaticChaosInjectionEnabled = setting.AutomaticChaosInjectionEnabled;
             MaxDuration = setting.MaxDuration;
-            Frecuency = setting.Frecuency;
+            Frequency = setting.Frequency;
             PercentageNodesToRestart = setting.PercentageNodesToRestart;
             PercentageNodesToStop = setting.PercentageNodesToStop;
             OperationChaosSettings = setting.OperationChaosSettings;

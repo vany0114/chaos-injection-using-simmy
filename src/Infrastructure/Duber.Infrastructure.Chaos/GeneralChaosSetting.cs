@@ -11,7 +11,7 @@ namespace Duber.Infrastructure.Chaos
 
         public bool ClusterChaosEnabled { get; set; }
 
-        public TimeSpan Frecuency { get; set; }
+        public TimeSpan Frequency { get; set; }
 
         public TimeSpan MaxDuration { get; set; }
 
@@ -27,8 +27,20 @@ namespace Duber.Infrastructure.Chaos
 
         public int PercentageNodesToStop { get; set; }
 
+        public ExecutionInformation ExecutionInformation { get; set; }
+
         public List<OperationChaosSetting> OperationChaosSettings { get; set; }
 
         public OperationChaosSetting GetSettingsFor(string operationKey) => OperationChaosSettings?.SingleOrDefault(i => i.OperationKey == operationKey);
+    }
+
+    [Serializable]
+    public class ExecutionInformation
+    {
+        public DateTimeOffset LastTimeExecuted { get; set; }
+
+        public DateTimeOffset ChaosStoppedAt { get; set; }
+
+        public bool MonkeysReleased { get; set; }
     }
 }
