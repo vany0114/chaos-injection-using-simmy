@@ -3,6 +3,8 @@ A microservice based application to demonstrate how chaos engineering works with
 
 # WIP
 
+![](https://github.com/vany0114/simmy-demo/blob/master/Architecture.png)
+
 ## Prerequisites and Installation Requirements
 
 1. Install [Docker for Windows](https://docs.docker.com/docker-for-windows/install/).
