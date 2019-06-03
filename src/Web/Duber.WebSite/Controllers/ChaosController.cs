@@ -57,6 +57,7 @@ namespace Duber.WebSite.Controllers
 
             var chaosSettings = viewModel as GeneralChaosSetting;
             var originalSettings = await _httpClient.GetGeneralChaosSettings();
+            chaosSettings.Id = Guid.NewGuid();
             chaosSettings.OperationChaosSettings = originalSettings.OperationChaosSettings;
             chaosSettings.ExecutionInformation = originalSettings.ExecutionInformation;
 

@@ -12,6 +12,7 @@ namespace Duber.WebSite.Models
 
         public GeneralChaosSettingViewModel(GeneralChaosSetting setting)
         {
+            Id = setting.Id;
             AutomaticChaosInjectionEnabled = setting.AutomaticChaosInjectionEnabled;
             MaxDuration = setting.MaxDuration;
             Frequency = setting.Frequency;

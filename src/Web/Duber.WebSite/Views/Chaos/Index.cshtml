@@ -55,7 +55,10 @@
     </div>
 
     @{
-        await Html.RenderPartialAsync("_OperationSettingsList", Model?.OperationChaosSettings);
+        if(Model.Id != default)
+        {
+            await Html.RenderPartialAsync("_OperationSettingsList", Model?.OperationChaosSettings);
+        }
     }
 </form>
 

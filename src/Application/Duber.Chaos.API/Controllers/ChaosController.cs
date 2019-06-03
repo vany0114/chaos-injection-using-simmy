@@ -70,20 +70,23 @@ namespace Duber.Chaos.API.Controllers
             }
 
             var currentSettings = await _chaosRepository.GetChaosSettingsAsync();
-            
-            // just in case automatic injection is disabled when the watchmonkey has released the monkeys.
-            if (settings.AutomaticChaosInjectionEnabled == false && currentSettings.ExecutionInformation.MonkeysReleased)
-            {
-                settings.ExecutionInformation.MonkeysReleased = false;
-                settings.ExecutionInformation.ChaosStoppedAt = new DateTimeOffset(DateTime.UtcNow);
-            }
 
-            // every time automatic injection changes, I change the LastTimeExecuted in order to start to watch after that change, 
-            // otherwise if the last time the watchmonkey released the monkeys was let's say 2 days ago and the frequency is one day, 
-            // it's gonna release the monkeys immediately next time the watchmonkey is executed and it should be the next day (given that example) after I updated that setting.
-            if (settings.AutomaticChaosInjectionEnabled != currentSettings.AutomaticChaosInjectionEnabled)
+            if (currentSettings != null)
             {
-                settings.ExecutionInformation.LastTimeExecuted = new DateTimeOffset(DateTime.UtcNow);
+                // just in case automatic injection is disabled when the watchmonkey has released the monkeys.
+                if (settings.AutomaticChaosInjectionEnabled == false && currentSettings.ExecutionInformation.MonkeysReleased)
+                {
+                    settings.ExecutionInformation.MonkeysReleased = false;
+                    settings.ExecutionInformation.ChaosStoppedAt = new DateTimeOffset(DateTime.UtcNow);
+                }
+
+                // every time automatic injection changes, I change the LastTimeExecuted in order to start to watch after that change, 
+                // otherwise if the last time the watchmonkey released the monkeys was let's say 2 days ago and the frequency is one day, 
+                // it's gonna release the monkeys immediately next time the watchmonkey is executed and it should be the next day (given that example) after I updated that setting.
+                if (settings.AutomaticChaosInjectionEnabled != currentSettings.AutomaticChaosInjectionEnabled)
+                {
+                    settings.ExecutionInformation.LastTimeExecuted = new DateTimeOffset(DateTime.UtcNow);
+                }
             }
 
             await _chaosRepository.UpdateChaosSettings(settings);

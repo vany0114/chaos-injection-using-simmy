@@ -7,6 +7,8 @@ namespace Duber.Infrastructure.Chaos
     [Serializable]
     public class GeneralChaosSetting
     {
+        public Guid Id { get; set; }
+
         public bool AutomaticChaosInjectionEnabled { get; set; }
 
         public bool ClusterChaosEnabled { get; set; }
