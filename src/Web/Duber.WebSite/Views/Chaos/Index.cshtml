@@ -7,6 +7,17 @@
 <h2>Chaos Settings</h2>
 <div asp-validation-summary="All" class="text-danger"></div>
 
+@{
+    if (Model.Id == Guid.Empty)
+    {
+        <div id="info" class="alert alert-info">
+            <strong id="info-text">
+                There are no settings saved yet. In order to add some operation settings, you should save the general settings first.
+            </strong>
+        </div>
+    }
+}
+
 <form method="post">
     <div class="panel panel-default">
         <div class="panel-heading">General Chaos Settings</div>
@@ -55,7 +66,7 @@
     </div>
 
     @{
-        if(Model.Id != default)
+        if (Model.Id != default)
         {
             await Html.RenderPartialAsync("_OperationSettingsList", Model?.OperationChaosSettings);
         }

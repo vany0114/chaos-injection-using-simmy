@@ -26,6 +26,13 @@ namespace Duber.WebSite.Controllers
             var chaosSettings = await _httpClient.GetGeneralChaosSettings();
             var viewModel = new GeneralChaosSettingViewModel(chaosSettings);
 
+            // set some default values arbitrarily
+            if(viewModel.Frequency == default || viewModel.MaxDuration == default)
+            {
+                viewModel.Frequency = new TimeSpan(23, 59, 0);
+                viewModel.MaxDuration = new TimeSpan(0, 15, 0);
+            }
+
             return View(viewModel);
         }
 
