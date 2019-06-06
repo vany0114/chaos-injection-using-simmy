@@ -47,7 +47,7 @@ namespace Duber.Chaos.WatchMonkey
                             .ForEach(operation => operation.Enabled = false);
 
                         await _chaosApiHttpClient.UpdateGeneralChaosSettings(chaosSeetings);
-                        log.LogInformation($"Monkeys caged at at: {chaosSeetings.ExecutionInformation.ChaosStoppedAt}");
+                        log.LogInformation($"Monkeys caged at: {chaosSeetings.ExecutionInformation.ChaosStoppedAt}");
                     }
                     else
                     {
@@ -61,6 +61,7 @@ namespace Duber.Chaos.WatchMonkey
                         {
                             monkeysToStop.ForEach(operation => operation.Enabled = false);
                             await _chaosApiHttpClient.UpdateGeneralChaosSettings(chaosSeetings);
+                            log.LogInformation($"{monkeysToStop.Count} specific monkey(s) caged at: {new DateTimeOffset(DateTime.UtcNow)}");
                         }
                     }
                 }

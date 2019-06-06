@@ -10,11 +10,8 @@ namespace Duber.Infrastructure.Chaos.CustomChaos
 {
     internal static class ClusterChaosManager
     {
-        // TODO: consider receiving the resource group as a parameter, might be configured via UI, settings, etc, that way we can control the chaos injection by region, environment, etc, depending on how you manage your resources on Azure.
         private static HttpClient _httpClient = new HttpClient();
         private static GeneralChaosSetting _chaosSetting;
-        private static string _resourceGroup = "duber-rs-group";
-        private static string _scaleSetName = "primary";
 
         internal static async Task RestartNodes(GeneralChaosSetting chaosSetting, int percentage)
         {
@@ -37,7 +34,7 @@ namespace Duber.Infrastructure.Chaos.CustomChaos
             var taskList = new List<Task>();
             foreach (var node in nodes)
             {
-                var URL = $"https://management.azure.com/subscriptions/{_chaosSetting.SubscriptionId}/resourceGroups/{_resourceGroup}/providers/Microsoft.Compute/virtualMachineScaleSets/{_scaleSetName}/virtualmachines/{node.instanceId}/{operation}?api-version=2018-06-01";
+                var URL = $"https://management.azure.com/subscriptions/{_chaosSetting.SubscriptionId}/resourceGroups/{_chaosSetting.ResourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{_chaosSetting.VMScaleSetName}/virtualmachines/{node.instanceId}/{operation}?api-version=2018-06-01";
                 taskList.Add(_httpClient.PostAsync(URL, null));
             }
 
@@ -47,7 +44,7 @@ namespace Duber.Infrastructure.Chaos.CustomChaos
 
         private static async Task<VirtualMachineScaleSetVM> GetClusterNodes()
         {
-            var URL = $"https://management.azure.com/subscriptions/{_chaosSetting.SubscriptionId}/resourceGroups/{_resourceGroup}/providers/Microsoft.Compute/virtualMachineScaleSets/{_scaleSetName}/virtualMachines?$select=instanceView&$expand=instanceView&api-version=2018-06-01";
+            var URL = $"https://management.azure.com/subscriptions/{_chaosSetting.SubscriptionId}/resourceGroups/{_chaosSetting.ResourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{_chaosSetting.VMScaleSetName}/virtualMachines?$select=instanceView&$expand=instanceView&api-version=2018-06-01";
             var response = await _httpClient.GetAsync(URL);
             return JsonConvert.DeserializeObject<VirtualMachineScaleSetVM>(await response.Content.ReadAsStringAsync());
         }
@@ -55,17 +52,18 @@ namespace Duber.Infrastructure.Chaos.CustomChaos
         private static async Task<IEnumerable<Value>> GetNodesToRestartStop(int percentage)
         {
             var nodes = await GetClusterNodes();
-            percentage = Math.Max(percentage, 60); // ensures that at least the cluster will remain with the 40% of nodes. You can make it configurable.
-            var numberOfNodesToRestart = Math.Ceiling(percentage * nodes.value.Count() / 100m);
-            var unhealthyStatuses = new[] { "PowerState/deallocated", "PowerState/stopped" };
+            percentage = Math.Min(percentage, 60); // ensures that at least the cluster will remain with the 40% of nodes. You can make it configurable.
+            var numberOfNodesToRestartStop = Math.Ceiling(percentage * nodes.value.Count() / 100m);
+            var unhealthyStatuses = new[] { "PowerState/deallocated", "PowerState/stopped", "ProvisioningState/updating" };
 
+            // since this guy may be executed many times I  make sure I don't restart/stop more than the allowed nodes. We can also consider make this guy thread safe.
             var unhealthyNodes = nodes.value.Where(node => node.properties.instanceView.statuses.Any(status => unhealthyStatuses.Contains(status.code)));
-            if (unhealthyNodes.Count() >= numberOfNodesToRestart)
+            if (unhealthyNodes.Count() >= numberOfNodesToRestartStop)
                 return new List<Value>();
 
             return nodes.value
                 .Where(node => node.properties.instanceView.statuses.Any(status => !unhealthyStatuses.Contains(status.code)))
-                .Take((int)numberOfNodesToRestart);
+                .Take((int)numberOfNodesToRestartStop);
         }
 
         private static async Task<string> GetAccessToken(string tenantId, string clientId, string clientKey)

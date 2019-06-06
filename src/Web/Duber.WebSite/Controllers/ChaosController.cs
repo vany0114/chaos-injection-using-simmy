@@ -27,7 +27,7 @@ namespace Duber.WebSite.Controllers
             var viewModel = new GeneralChaosSettingViewModel(chaosSettings);
 
             // set some default values arbitrarily
-            if(viewModel.Frequency == default || viewModel.MaxDuration == default)
+            if (viewModel.Frequency == default || viewModel.MaxDuration == default)
             {
                 viewModel.Frequency = new TimeSpan(23, 59, 0);
                 viewModel.MaxDuration = new TimeSpan(0, 15, 0);
@@ -56,11 +56,27 @@ namespace Duber.WebSite.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateGeneralSettings(GeneralChaosSettingViewModel viewModel)
         {
-            if(viewModel.MaxDuration > viewModel.Frequency)
+            // TODO: use FluentValidation insteaad, would be better.
+            if (viewModel.MaxDuration > viewModel.Frequency)
             {
                 ModelState.AddModelError("MaxDuration", "Duration should be less than Frequency.");
-                return View("Index", viewModel);
             }
+
+            if (viewModel.ClusterChaosEnabled)
+            {
+                if (string.IsNullOrWhiteSpace(viewModel.VMScaleSetName) || string.IsNullOrWhiteSpace(viewModel.ResourceGroupName))
+                {
+                    ModelState.AddModelError("VMScaleSetName", "Virtual machine scale set name and resource group name are mandatory.");
+                }
+
+                if (viewModel.PercentageNodesToStop == default && viewModel.PercentageNodesToRestart == default)
+                {
+                    ModelState.AddModelError("VMScaleSetName", "You need to specify a value either for Percentage Nodes To Stop or Percentage Nodes To Restart");
+                }
+            }
+
+            if (!ModelState.IsValid)
+                return View("Index", viewModel);
 
             var chaosSettings = viewModel as GeneralChaosSetting;
             var originalSettings = await _httpClient.GetGeneralChaosSettings();
@@ -82,7 +98,7 @@ namespace Duber.WebSite.Controllers
                 chaosSettings.OperationChaosSettings[index] = operationChaosSetting;
             else
             {
-                if(chaosSettings.OperationChaosSettings.Any(x => x.OperationKey == operationChaosSetting.OperationKey))
+                if (chaosSettings.OperationChaosSettings.Any(x => x.OperationKey == operationChaosSetting.OperationKey))
                 {
                     PopulateLists();
                     ModelState.AddModelError("OperationKey", "There is already a setting using that operation key");

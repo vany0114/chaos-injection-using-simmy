@@ -23,6 +23,8 @@
         <div class="panel-heading">General Chaos Settings</div>
         <div class="panel-body">
 
+            <input type="hidden" asp-for="Id" />
+
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <input asp-for="AutomaticChaosInjectionEnabled" type="checkbox" class="automatic-chaos-injection" />
@@ -30,11 +32,11 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="Frequency"></label>
-                    <input asp-for="Frequency" type="time" class="form-control frecuency" value="@Model.Frequency" min="00:15" />
+                    <input asp-for="Frequency" type="time" class="form-control automatic-chaos-controls" value="@Model.Frequency" min="00:15" />
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="MaxDuration">Max Duration</label>
-                    <input asp-for="MaxDuration" type="time" class="form-control max-duration" value="@Model.MaxDuration" min="00:05" max="01:00" />
+                    <input asp-for="MaxDuration" type="time" class="form-control automatic-chaos-controls" value="@Model.MaxDuration" min="00:05" max="01:00" />
                 </div>
             </div>
 
@@ -49,11 +51,33 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="PercentageNodesToRestart">Percentage Nodes To Restart</label>
-                    <input asp-for="PercentageNodesToRestart" type="number" class="form-control nodes-to-restart" value="@Model.PercentageNodesToRestart" min="0" max="100" />
+                    <input asp-for="PercentageNodesToRestart" type="number" class="form-control cluster-chaos-controls" value="@Model.PercentageNodesToRestart" min="0" max="100" />
                 </div>
-                <div class="col-md-4">
+                <div class="form-group col-md-4">
                     <label asp-for="PercentageNodesToStop">Percentage Nodes To Stop</label>
-                    <input asp-for="PercentageNodesToStop" type="number" class="form-control nodes-to-stop" value="@Model.PercentageNodesToStop" min="0" max="100" />
+                    <input asp-for="PercentageNodesToStop" type="number" class="form-control cluster-chaos-controls" value="@Model.PercentageNodesToStop" min="0" max="100" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="ResourceGroupName">Resource Group Name</label>
+                    <input asp-for="ResourceGroupName" class="form-control cluster-chaos-controls" value="@Model.ResourceGroupName" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="VMScaleSetName">VM Scale Set Name</label>
+                    <input asp-for="VMScaleSetName" class="form-control cluster-chaos-controls" value="@Model.VMScaleSetName" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                </div>
+                <div class="form-group col-md-8">
+                    <label asp-for="ClusterChaosInjectionRate">Injection Rate</label>
+                    <input asp-for="ClusterChaosInjectionRate" type="number" class="form-control cluster-chaos-controls" min="0" max="1" value="@Model.ClusterChaosInjectionRate" />
                 </div>
             </div>
 
@@ -66,7 +90,7 @@
     </div>
 
     @{
-        if (Model.Id != default)
+        if (Model.Id != Guid.Empty)
         {
             await Html.RenderPartialAsync("_OperationSettingsList", Model?.OperationChaosSettings);
         }
@@ -89,8 +113,7 @@
                 enable = false;
             }
 
-            $(".frecuency").prop("readonly", !enable);
-            $(".max-duration").prop("readonly", !enable);
+            $(".automatic-chaos-controls").prop("readonly", !enable);
         };
 
         let clusterChaosChanged = (event) => {
@@ -99,8 +122,7 @@
                 enable = false;
             }
 
-            $(".nodes-to-restart").prop("readonly", !enable);
-            $(".nodes-to-stop").prop("readonly", !enable);
+            $(".cluster-chaos-controls").prop("readonly", !enable);
         };
     </script>
 }

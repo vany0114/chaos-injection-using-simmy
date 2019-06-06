@@ -13,6 +13,8 @@ namespace Duber.Infrastructure.Chaos
 
         public bool ClusterChaosEnabled { get; set; }
 
+        public double ClusterChaosInjectionRate { get; set; }
+
         public TimeSpan Frequency { get; set; }
 
         public TimeSpan MaxDuration { get; set; }
@@ -28,6 +30,10 @@ namespace Duber.Infrastructure.Chaos
         public int PercentageNodesToRestart { get; set; }
 
         public int PercentageNodesToStop { get; set; }
+
+        public string ResourceGroupName { get; set; }
+
+        public string VMScaleSetName { get; set; }
 
         public ExecutionInformation ExecutionInformation { get; set; }
 

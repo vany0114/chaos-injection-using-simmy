@@ -20,6 +20,9 @@ namespace Duber.WebSite.Models
             PercentageNodesToStop = setting.PercentageNodesToStop;
             OperationChaosSettings = setting.OperationChaosSettings;
             ClusterChaosEnabled = setting.ClusterChaosEnabled;
+            ResourceGroupName = setting.ResourceGroupName;
+            VMScaleSetName = setting.VMScaleSetName;
+            ClusterChaosInjectionRate = setting.ClusterChaosInjectionRate;
         }
 
         public List<SelectListItem> OperationKeys { get; set; }

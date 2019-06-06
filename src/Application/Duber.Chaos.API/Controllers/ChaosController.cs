@@ -64,13 +64,26 @@ namespace Duber.Chaos.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Post([FromBody] GeneralChaosSetting settings)
         {
+            // TODO: use FluentValidation insteaad, would be better.
             if (settings.MaxDuration > settings.Frequency)
             {
                 return BadRequest("Duration should be less than Frequency.");
             }
 
-            var currentSettings = await _chaosRepository.GetChaosSettingsAsync();
+            if (settings.ClusterChaosEnabled)
+            {
+                if (string.IsNullOrWhiteSpace(settings.VMScaleSetName) || string.IsNullOrWhiteSpace(settings.ResourceGroupName))
+                {
+                    return BadRequest("Virtual machine scale set name and resource group name are mandatory.");
+                }
 
+                if (settings.PercentageNodesToStop == default && settings.PercentageNodesToRestart == default)
+                {
+                    return BadRequest("You need to specify a value either for Percentage Nodes To Stop or Percentage Nodes To Restart");
+                }
+            }
+
+            var currentSettings = await _chaosRepository.GetChaosSettingsAsync();
             if (currentSettings != null)
             {
                 // just in case automatic injection is disabled when the watchmonkey has released the monkeys.
