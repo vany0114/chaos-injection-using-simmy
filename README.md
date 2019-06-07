@@ -26,7 +26,7 @@ The example demonstrates the following patterns with Simmy:
 
 * Configuring StartUp so that Simmy chaos policies are only introduced in builds for certain environments.
 * Configuring Simmy chaos policies to be injected into the app without changing any code, using a UI/API to update/get the chaos configuration.
-* Injecting faults or chaos automatically by using a *WatchMonkey* (Azure function) specifying a frequency and duration of the chaos.
+* Injecting faults or chaos automatically by using a *WatchMonkey* specifying a frequency and duration of the chaos.
 
 ## The Architecture
 ![](https://github.com/vany0114/simmy-demo/blob/master/Architecture.png)
