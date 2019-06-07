@@ -150,6 +150,60 @@ if (env.IsDevelopment() == false)
 >This allows you to inject Simmy into your app without changing any of your existing app configuration of Polly policies.
 This extension method configures the policies in your PolicyRegistry with Simmy policies which react to chaos configured trhough the UI.
 
+## How the chaos settings are getting from
+We're injecting a factory which takes care of getting the current chaos settings from the Chaos API. So we're injecting the factory as a `Lazy Task Scoped` service because we want to avoid to add additional overhead/latency to our system, that way we only retrieve the configuration once per request no matter how many times the factory is executed.
+
+### Injecting chaos settings factory
+```
+public static IServiceCollection AddChaosApiHttpClient(this IServiceCollection services, IConfiguration configuration)
+{
+    services.AddHttpClient<ChaosApiHttpClient>(client =>
+    {
+        client.Timeout = TimeSpan.FromSeconds(5);
+        client.BaseAddress = new Uri(configuration.GetValue<string>("ChaosApiSettings:BaseUrl"));
+    });
+
+    services.AddScoped<Lazy<Task<GeneralChaosSetting>>>(sp =>
+    {
+        // we use LazyThreadSafetyMode.None in order to avoid locking.
+        var chaosApiHttpClient = sp.GetRequiredService<ChaosApiHttpClient>();
+        return new Lazy<Task<GeneralChaosSetting>>(() => chaosApiHttpClient.GetGeneralChaosSettings(), LazyThreadSafetyMode.None);
+    });
+
+    return services;
+}
+```
+>We're using `LazyThreadSafetyMode.None` to avoid locking.
+
+### Using chaos settings factory from a controller/service/repository/wherever
+
+```
+// constructor
+public TripController(Lazy<Task<GeneralChaosSetting>> generalChaosSettingFactory,...)
+{
+    ...
+}
+
+public async Task<IActionResult> SimulateTrip(TripRequestModel model)
+{
+    ...
+    generalChaosSetting = await _generalChaosSettingFactory.Value;
+    var context = new Context(OperationKeys.TripApiCreate.ToString()).WithChaosSettings(generalChaosSetting);
+    var response = await _httpClient.SendAsync(request, context);
+    ...
+}
+
+private async Task UpdateTripLocation(Guid tripId, LocationModel location)
+{
+    ...
+    generalChaosSetting = await _generalChaosSettingFactory.Value;
+    var context = new Context(OperationKeys.TripApiUpdateCurrentLocation.ToString()).WithChaosSettings(generalChaosSetting);
+    var response = await _httpClient.SendAsync(request, context);
+    ...
+}
+
+```
+
 ## References:
 * https://github.com/Polly-Contrib/Polly.Contrib.SimmyDemo_WebApi
 * http://elvanydev.com/Microservices-part1/
