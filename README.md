@@ -98,15 +98,15 @@ A master switch for this call site. When true, faults may be injected at this ca
 Is an Azure Function with a timer trigger which is executed every 5 minutes (value set arbitrarily for this example) in order to watch the monkeys (chaos settings/policies) set up in the previous UI. So, if the automatic chaos injection is enabled it releases all the monkeys for the given frequency within the time window configured (Max Duration), after that time window all the monkeys are caged (disabled) again. It also watches monkeys with a specific duration, allowing you to disable specific faults in a smaller window time.
 
 ## How the chaos is injected:
->Calls guarded by Polly policies often wrap a series of policies around a call using PolicyWrap. The policies in the PolicyWrap act as nesting middleware around the outbound call.
-The recommended technique for introducing Simmy is to use one or more Simmy chaos policies as the innermost policies in a PolicyWrap.
+>Calls guarded by Polly policies often wrap a series of policies around a call using `PolicyWrap`. The policies in the `PolicyWrap` act as nesting middleware around the outbound call.
+The recommended technique for introducing `Simmy` is to use one or more Simmy chaos policies as the innermost policies in a `PolicyWrap`.
 By placing the chaos policies innermost, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency.
-The existing Polly policies - further out in the PolicyWrap - still apply, so you can test how the Polly resilience you have configured handles the chaos/faults injected by Simmy.
+The existing Polly policies - further out in the `PolicyWrap` - still apply, so you can test how the Polly resilience you have configured handles the chaos/faults injected by `Simmy`.
 
 ## Adding Simmy chaos without changing existing configuration code
->As mentioned above, the usual technique to add chaos-injection is to configure Simmy policies innermost in your app's PolicyWraps.
-One of the simplest ways to do this all across your app is to make all policies used in your app be stored in and drawn from PolicyRegistry. This is the technique demonstrated in this sample app.
-In StartUp, all the Polly policies which will be used are configured, and registered in PolicyRegistry:
+>As mentioned above, the usual technique to add chaos-injection is to configure `Simmy` policies innermost in your app's PolicyWraps.
+One of the simplest ways to do this all across your app is to make all policies used in your app be stored in and drawn from `PolicyRegistry`. This is the technique demonstrated in this sample app.
+In `StartUp`, all the Polly policies which will be used are configured, and registered in `PolicyRegistry`:
 
 ### Setting up some Http policies
 ```
@@ -130,7 +130,7 @@ services.AddSingleton<IPolicyAsyncExecutor>(sp =>
 ```
 
 ### Injecting chaos policies (monkeys) to our resilient strategies
->The `AddChaosInjectors()` extension method on IPolicyRegistry<> simply takes every policy in your PolicyRegistry and wraps Simmy policies (as the innermost policy) inside.
+>The `AddChaosInjectors/AddHttpChaosInjectors` extension methods on IPolicyRegistry<> simply takes every policy in your PolicyRegistry and wraps Simmy policies (as the innermost policy) inside.
 
 ```
 if (env.IsDevelopment() == false)
@@ -149,9 +149,12 @@ if (env.IsDevelopment() == false)
 This extension method configures the policies in your PolicyRegistry with Simmy policies which react to chaos configured trhough the UI.
 
 ## References:
-https://github.com/Polly-Contrib/Polly.Contrib.SimmyDemo_WebApi
+* https://github.com/Polly-Contrib/Polly.Contrib.SimmyDemo_WebApi
+* http://elvanydev.com/Microservices-part1/
+* http://elvanydev.com/Microservices-part2/
+* http://elvanydev.com/Microservices-part3/
+* http://elvanydev.com/Microservices-part4/
+* http://elvanydev.com/resilience-with-polly/
 
-***NOTE:*** for more details 
-articles microservices
-article resilient strategy
-article explaining this example deeper is comming 
+## Note: 
+I'm writing several articles explaining this example deeper and all that we need to know about Simmy :smiley:
