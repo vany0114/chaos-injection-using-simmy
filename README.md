@@ -10,6 +10,8 @@ A microservice based application to demonstrate how chaos engineering works with
 6. Set `docker-compose` project as startup project.
 7. Press F5 and that's it!
 
+**Note:** All images into the `docker-compose.override.yml` are configured to run on `Production` environment in order to inject the chaos policies (I'll explain it later) except the ` duber.chaos.api` in order to you'll able to use `In-Memory` cache locally, otherwise it will use `Redis` cache.
+
 ![](https://github.com/vany0114/vany0114.github.io/blob/master/images/docker_settings_shared_drives.png)
 
 > Note: The first time you hit F5 it'll take a few minutes, because in addition to compile the solution, it needs to pull/download the base images (SQL for Linux Docker, ASPNET, MongoDb and RabbitMQ images) and register them in the local image repo of your PC. The next time you hit F5 it'll be much faster.
