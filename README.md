@@ -21,7 +21,7 @@ It is important to set Docker up properly with enough memory RAM and CPU assigne
 
 ![](https://github.com/vany0114/vany0114.github.io/blob/master/images/docker_settings.png)
 
-## The example
+## The Example
 This repo provides an example/approach of how to use Simmy in a kind of real but simple scenario over a distributed architecture to inject chaos in your system in a configurable and automatic way.
 
 The example demonstrates the following patterns with Simmy:
