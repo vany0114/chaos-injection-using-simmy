@@ -1,5 +1,5 @@
 # Chaos injection using Simmy in a Microservice architecture
-A microservice based application to demonstrate how chaos engineering works with [Simmy](https://github.com/Polly-Contrib/Simmy) using chaos policies in a distributed system.
+A microservice based application to demonstrate how chaos engineering works with [Simmy](https://github.com/Polly-Contrib/Simmy) using chaos policies in a distributed system and how we can inject even a custom behavior given our needs or infrastructure, this time injecting custom behavior to generate chaos in our Service Fabric Cluster.
 
 ## Prerequisites and Installation Requirements
 1. Install [Docker for Windows](https://docs.docker.com/docker-for-windows/install/).
