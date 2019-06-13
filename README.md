@@ -97,7 +97,7 @@ If set, a result with the given http status code will be returned for affected c
 A master switch for this call site. When true, faults may be injected at this call site per the other parameters; when false, no faults will be injected.
 
 ## The WatchMonkey
-Is an Azure Function with a timer trigger which is executed every 5 minutes (value set arbitrarily for this example) in order to watch the monkeys (chaos settings/policies) set up in the previous UI. So, if the automatic chaos injection is enabled it releases all the monkeys for the given frequency within the time window configured (Max Duration), after that time window all the monkeys are caged (disabled) again. It also watches monkeys with a specific duration, allowing you to disable specific faults in a smaller window time.
+Is an Azure Function with a timer trigger which is executed every 5 minutes (value set arbitrarily for this example) in order to watch the monkeys (chaos settings/policies) set up in the previous UI. So, if the automatic chaos injection is enabled it releases all the monkeys for the given frequency within the time window configured (Max Duration), after that time window all the monkeys are caged (disabled) again. It also watches monkeys with a specific duration, allowing you to disable specific faults in a smaller time window.
 
 ## How the chaos is injected:
 >Calls guarded by Polly policies often wrap a series of policies around a call using `PolicyWrap`. The policies in the `PolicyWrap` act as nesting middleware around the outbound call.
