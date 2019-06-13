@@ -40,7 +40,7 @@ The example provides an API to save and get the chaos configuration in Redis Cac
 
 ## The Chaos UI - Configuring the chaos policies (monkeys)
 
-The example provides a UI to set up the general chaos settings and also settings by operation level.
+The example provides a UI to set up the general chaos settings and also settings at operation level.
 
 ### General chaos settings
 ![](https://github.com/vany0114/chaos-injection-using-simmy/blob/master/demo-images/general-chaos-settings.png)
