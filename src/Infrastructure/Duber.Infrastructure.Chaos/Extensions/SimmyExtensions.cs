@@ -25,8 +25,6 @@ namespace Duber.Infrastructure.Chaos
         private static readonly Task<HttpResponseMessage> NoHttpResponse = Task.FromResult<HttpResponseMessage>(null);
         private static readonly Task<TimeSpan> NoLatency = Task.FromResult(TimeSpan.Zero);
 
-        private static OperationChaosSetting GetOperationChaosSettings(this Context context) => context.GetChaosSettings()?.GetSettingsFor(context.OperationKey);
-
         /// <summary>
         /// Add chaos-injection policies to every policy returning <see cref="IAsyncPolicy{HttpResponseMessage}"/>
         /// in the supplied <paramref name="registry"/>
