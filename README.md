@@ -12,6 +12,8 @@ A microservice based application to demonstrate how chaos engineering works with
 
 **Note:** All images into the `docker-compose.override.yml` are configured to run on `Production` environment in order to inject the chaos policies (I'll explain it later) except the ` duber.chaos.api` in order to you'll be able to use `In-Memory` cache locally, otherwise it will use `Redis` cache.
 
+**Note 2:** If you want to test out the chaos in your cluster, you need to create a [service principal](https://blog.jongallant.com/2017/11/azure-rest-apis-postman/), then set up the values for`GeneralChaosSetting` section into the `appsettings` file of `Duber.Chaos.API` project, or their respective environment variables inside `docker-compose.override`.
+
 ![](https://github.com/vany0114/vany0114.github.io/blob/master/images/docker_settings_shared_drives.png)
 
 > Note: The first time you hit F5 it'll take a few minutes, because in addition to compile the solution, it needs to pull/download the base images (SQL for Linux Docker, ASPNET, MongoDb and RabbitMQ images) and register them in the local image repo of your PC. The next time you hit F5 it'll be much faster.
