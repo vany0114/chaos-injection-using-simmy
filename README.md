@@ -71,7 +71,7 @@ The name of the resource group where the VM Scale Set of the cluster belongs to.
 * **VM Scale Set Name:**
 The name of the Virtual Machine Scale Set used by the cluster.
 
-* **Injection Rsate:**
+* **Injection Rate:**
 A `double` between 0 and 1, indicating what proportion of calls should be subject to failure-injection. For example, if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls.
 
 ### Operations chaos settings
@@ -83,7 +83,7 @@ Which operation within your app these chaos settings apply to. Each call site in
 * **Duration:**
 A `Timespan` indicating how long the chaos for a specific operation should take once is injected if Automatic Chaos Injection is enabled. (Optional)
 
-* **Injection Rsate:**
+* **Injection Rate:**
 A `double` between 0 and 1, indicating what proportion of calls should be subject to failure-injection. For example, if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls.
 
 * **Latency:**
