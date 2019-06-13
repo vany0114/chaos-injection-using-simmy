@@ -41,11 +41,15 @@
         },
         "tripApiHttpRule": { 
             "type": "int",
-            "defaultValue": 5100
+            "defaultValue": 5103
         },
         "invoiceApiHttpRule": { 
             "type": "int",
-            "defaultValue": 5104
+            "defaultValue": 5101
+        },
+		"chaosApiHttpRule": { 
+            "type": "int",
+            "defaultValue": 5102
         },
         "subnet0Name": {
             "type": "string",
@@ -382,6 +386,22 @@
                                 "id": "[variables('lbIPConfig0')]"
                             },
                             "frontendPort": "[parameters('invoiceApiHttpRule')]",
+                            "idleTimeoutInMinutes": "5",
+                            "protocol": "tcp"
+                        }
+                    },
+					{
+                        "name": "ChaosApiHttpRule",
+                        "properties": {
+                            "backendAddressPool": {
+                                "id": "[variables('lbPoolID0')]"
+                            },
+                            "backendPort": "[parameters('chaosApiHttpRule')]",
+                            "enableFloatingIP": "false",
+                            "frontendIPConfiguration": {
+                                "id": "[variables('lbIPConfig0')]"
+                            },
+                            "frontendPort": "[parameters('chaosApiHttpRule')]",
                             "idleTimeoutInMinutes": "5",
                             "protocol": "tcp"
                         }

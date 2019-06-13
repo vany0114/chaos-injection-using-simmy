@@ -67,6 +67,9 @@
         },
         "invoiceApiHttpRule": {
             "value": 5101
+        },
+		"chaosApiHttpRule": {
+            "value": 5102
         }
     }
 }
