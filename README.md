@@ -78,7 +78,7 @@ A `double` between 0 and 1, indicating what proportion of calls should be subjec
 ![](https://github.com/vany0114/chaos-injection-using-simmy/blob/master/demo-images/operation-chaos-settings-exception.png)
 
 * **Operation:**
-Which operation within your app these chaos settings apply to. Each call site in your codebase which uses Polly and Simmy can be tagged with an [OperationKey](#using-chaos-settings-factory-from-a-controllerservicerepositorywherever). This is simply a string tag you choose, to identify different call paths in your app.
+Which operation within your app these chaos settings apply to. Each call site in your codebase which uses Polly and Simmy can be tagged with an [OperationKey](#using-chaos-settings-factory-from-consumers). This is simply a string tag you choose, to identify different call paths in your app.
 
 * **Duration:**
 A `Timespan` indicating how long the chaos for a specific operation should take once is injected if Automatic Chaos Injection is enabled. (Optional)
