@@ -152,7 +152,7 @@ if (env.IsDevelopment() == false)
 >This allows you to inject Simmy into your app without changing any of your existing app configuration of Polly policies.
 This extension method configures the policies in your PolicyRegistry with Simmy policies which react to chaos configured trhough the UI.
 
-## How the chaos settings are getting from
+## How does it get the chaos settings
 We're injecting a factory which takes care of getting the current chaos settings from the Chaos API. So we're injecting the factory as a `Lazy Task Scoped` service because we want to avoid to add additional overhead/latency to our system, that way we only retrieve the configuration once per request no matter how many times the factory is executed.
 
 ### Injecting chaos settings factory
@@ -177,7 +177,7 @@ public static IServiceCollection AddChaosApiHttpClient(this IServiceCollection s
 ```
 >We're using `LazyThreadSafetyMode.None` to avoid locking.
 
-### Using chaos settings factory from a controller/service/repository/wherever
+### Using chaos settings factory from consumers
 
 ```
 // constructor
