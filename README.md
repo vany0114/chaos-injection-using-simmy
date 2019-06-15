@@ -215,4 +215,5 @@ private async Task UpdateTripLocation(Guid tripId, LocationModel location)
 * http://elvanydev.com/resilience-with-polly/
 
 ## Note: 
-I'm writing several articles explaining this example deeper and all that we need to know about Simmy :smiley:
+Visit my blog to where I explain this example deeper and all that we need to know about Simmy! :smiley:
+* http://elvanydev.com/chaos-injection-with-simmy/
