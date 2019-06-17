@@ -89,7 +89,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Duber.Chaos.API", "src\Appl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Duber.Infrastructure.Cache", "src\Infrastructure\Duber.Infrastructure.Cache\Duber.Infrastructure.Cache.csproj", "{9E0B041D-ED84-433B-8E03-6938258F4E38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duber.Chaos.WatchMonkey", "src\Application\Duber.Chaos.WatchMonkey\Duber.Chaos.WatchMonkey.csproj", "{1233C822-5767-47A9-8072-E56A14B9E9CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Duber.Chaos.WatchMonkey", "src\Application\Duber.Chaos.WatchMonkey\Duber.Chaos.WatchMonkey.csproj", "{1233C822-5767-47A9-8072-E56A14B9E9CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

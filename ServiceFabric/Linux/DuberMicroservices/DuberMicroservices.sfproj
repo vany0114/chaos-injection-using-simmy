@@ -29,6 +29,8 @@
     <None Include="Scripts\Deploy-FabricApplication.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ApplicationPackageRoot\ChaosPkg\Config\Settings.xml" />
+    <Content Include="ApplicationPackageRoot\ChaosPkg\ServiceManifest.xml" />
     <Content Include="ApplicationPackageRoot\InvoicePkg\Config\Settings.xml" />
     <Content Include="ApplicationPackageRoot\InvoicePkg\ServiceManifest.xml" />
     <Content Include="ApplicationPackageRoot\TripPkg\Config\Settings.xml" />
