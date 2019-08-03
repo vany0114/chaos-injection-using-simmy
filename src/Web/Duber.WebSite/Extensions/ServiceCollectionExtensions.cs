@@ -27,7 +27,7 @@ namespace Duber.WebSite.Extensions
             services.AddDbContext<UserContext>(options =>
             {
                 options.UseSqlServer(
-                    configuration["ConnectionString"],
+                    configuration["ConnectionStrings:WebsiteDB"],
                     sqlOptions =>
                     {
                         sqlOptions.MigrationsAssembly(typeof(UserContext).GetTypeInfo().Assembly.GetName().Name);
@@ -38,7 +38,7 @@ namespace Duber.WebSite.Extensions
             services.AddDbContext<DriverContext>(options =>
             {
                 options.UseSqlServer(
-                    configuration["ConnectionString"],
+                    configuration["ConnectionStrings:WebsiteDB"],
                     sqlOptions =>
                     {
                         sqlOptions.MigrationsAssembly(typeof(DriverContext).GetTypeInfo().Assembly.GetName().Name);
@@ -49,7 +49,7 @@ namespace Duber.WebSite.Extensions
             services.AddDbContext<ReportingContext>(options =>
             {
                 options.UseSqlServer(
-                    configuration["ConnectionString"],
+                    configuration["ConnectionStrings:WebsiteDB"],
                     sqlOptions =>
                     {
                         sqlOptions.MigrationsAssembly(typeof(ReportingContext).GetTypeInfo().Assembly.GetName().Name);

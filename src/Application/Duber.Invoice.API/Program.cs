@@ -1,8 +1,10 @@
-﻿using Duber.Domain.Invoice.Persistence;
+﻿using System;
+using Duber.Domain.Invoice.Persistence;
 using Duber.Infrastructure.WebHost;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.Logging;
 
 namespace Duber.Invoice.API
@@ -23,6 +25,20 @@ namespace Duber.Invoice.API
                 .ConfigureAppConfiguration((builderContext, config) =>
                 {
                     config.AddEnvironmentVariables();
+
+                    var settings = config.Build();
+                    if (settings.GetValue<bool>("UseAzureAppConfiguration"))
+                    {
+                        config.AddAzureAppConfiguration(options =>
+                        {
+                            options.Connect(settings["ConnectionStrings:AppConfig"])
+                                .ConfigureRefresh(refresh =>
+                                {
+                                    refresh.Register("GeneralChaosSetting:Sentinel", refreshAll: true);
+                                    refresh.SetCacheExpiration(TimeSpan.FromSeconds(1));
+                                });
+                        });
+                    }
                 })
                 .ConfigureLogging((hostingContext, builder) =>
                 {

@@ -103,6 +103,9 @@ namespace Duber.Invoice.API
                 sqlPolicyExecutor?.PolicyRegistry?.AddChaosInjectors();
             }
 
+            if (Configuration.GetValue<bool>("UseAzureAppConfiguration"))
+                app.UseAzureAppConfiguration();
+
             app.UseCors("CorsPolicy");
             app.UseMvc();
             ConfigureEventBusEvents(app);

@@ -1,10 +1,12 @@
-﻿using Duber.Domain.Driver.Persistence;
+﻿using System;
+using Duber.Domain.Driver.Persistence;
 using Duber.Domain.User.Persistence;
 using Duber.Infrastructure.WebHost;
 using Duber.WebSite.Infrastructure.Persistence;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -40,6 +42,20 @@ namespace Duber.WebSite
                 .ConfigureAppConfiguration((builderContext, config) =>
                 {
                     config.AddEnvironmentVariables();
+
+                    var settings = config.Build();
+                    if (settings.GetValue<bool>("UseAzureAppConfiguration"))
+                    {
+                        config.AddAzureAppConfiguration(options =>
+                        {
+                            options.Connect(settings["ConnectionStrings:AppConfig"])
+                                .ConfigureRefresh(refresh =>
+                                {
+                                    refresh.Register("GeneralChaosSetting:Sentinel", refreshAll: true);
+                                    refresh.SetCacheExpiration(TimeSpan.FromSeconds(1));
+                                });
+                        });
+                    }
                 })
                 .ConfigureLogging((hostingContext, builder) =>
                 {

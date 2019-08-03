@@ -31,7 +31,7 @@ namespace Duber.Invoice.API.Extensions
             services.AddDbContext<InvoiceMigrationContext>(options =>
             {
                 options.UseSqlServer(
-                    configuration["ConnectionString"],
+                    configuration["ConnectionStrings:InvoiceDB"],
                     sqlOptions =>
                     {
                         sqlOptions.MigrationsAssembly(typeof(InvoiceMigrationContext).GetTypeInfo().Assembly.GetName().Name);
@@ -45,7 +45,7 @@ namespace Duber.Invoice.API.Extensions
                 var mediator = provider.GetService<IMediator>();
                 var sqlExecutor = provider.GetService<IPolicyAsyncExecutor>();
                 var chaosSettingsFactory = provider.GetService<Lazy<Task<GeneralChaosSetting>>>();
-                var connectionString = configuration["ConnectionString"];
+                var connectionString = configuration["ConnectionStrings:InvoiceDB"];
                 return new InvoiceContext(connectionString, mediator, sqlExecutor, chaosSettingsFactory);
             });
 

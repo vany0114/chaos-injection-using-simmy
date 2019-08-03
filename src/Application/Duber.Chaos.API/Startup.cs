@@ -1,7 +1,6 @@
 ﻿using Duber.Chaos.API.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -47,6 +46,9 @@ namespace Duber.Chaos.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            if (Configuration.GetValue<bool>("UseAzureAppConfiguration"))
+                app.UseAzureAppConfiguration();
 
             app.UseCors("CorsPolicy");
             app.UseMvc();

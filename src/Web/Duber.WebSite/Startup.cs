@@ -40,7 +40,7 @@ namespace Duber.WebSite
                 .Configure<FormOptions>(x => x.ValueCountLimit = 2048)
                 .AddApplicationInsightsTelemetry(Configuration)
                 .AddMvc();
-
+            
             services.AddSignalR();
 
             services.Configure<TripApiSettings>(Configuration.GetSection("TripApiSettings"))
@@ -91,6 +91,10 @@ namespace Duber.WebSite
 
             ConfigureEventBusEvents(app);
             app.UseStaticFiles();
+
+            if (Configuration.GetValue<bool>("UseAzureAppConfiguration"))
+                app.UseAzureAppConfiguration();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

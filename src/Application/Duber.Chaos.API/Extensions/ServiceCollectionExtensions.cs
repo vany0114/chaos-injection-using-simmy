@@ -36,6 +36,10 @@ namespace Duber.Chaos.API.Extensions
 
         public static IServiceCollection AddDistributedCache(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment environment)
         {
+            // we don't need using cache when using AzureAppConfiguration.
+            if (configuration.GetValue<bool>("UseAzureAppConfiguration"))
+                return services;
+
             if (environment.IsDevelopment())
             {
                 services.AddMemoryCache();
@@ -45,7 +49,7 @@ namespace Duber.Chaos.API.Extensions
             {
                 services.AddDistributedRedisCache(option =>
                 {
-                    option.Configuration = configuration.GetValue<string>("ConnectionString");
+                    option.Configuration = configuration.GetValue<string>("ConnectionStrings:ChaosDB");
                     option.InstanceName = "master";
                 });
             }
@@ -55,7 +59,11 @@ namespace Duber.Chaos.API.Extensions
 
         public static IServiceCollection AddRepository(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IChaosRepository, ChaosRepository>();
+            if (configuration.GetValue<bool>("UseAzureAppConfiguration"))
+                services.AddTransient<IChaosRepository, AzureConfigurationAppRepository>();
+            else
+                services.AddTransient<IChaosRepository, ChaosRepository>();
+
             services.Configure<GeneralChaosSetting>(configuration.GetSection("GeneralChaosSetting"));
             return services;
         }

@@ -92,6 +92,7 @@ namespace Duber.WebSite.Controllers
         public async Task<IActionResult> AddOrUpdateOperationSettings(OperationChaosSetting operationChaosSetting)
         {
             var chaosSettings = await _httpClient.GetGeneralChaosSettings();
+            if (chaosSettings.OperationChaosSettings == null) chaosSettings.OperationChaosSettings = new List<OperationChaosSetting>();
             var index = chaosSettings.OperationChaosSettings.FindIndex(x => x.Id == operationChaosSetting.Id);
 
             if (index >= 0)
