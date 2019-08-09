@@ -13,6 +13,7 @@ namespace Duber.Infrastructure.Chaos.IoC
         {
             services.AddHttpClient<ChaosApiHttpClient>(client =>
             {
+                client.Timeout = TimeSpan.FromSeconds(5);
                 client.BaseAddress = new Uri(configuration.GetValue<string>("ChaosApiSettings:BaseUrl"));
             });
 

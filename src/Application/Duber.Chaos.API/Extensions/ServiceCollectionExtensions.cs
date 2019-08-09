@@ -60,7 +60,7 @@ namespace Duber.Chaos.API.Extensions
         public static IServiceCollection AddRepository(this IServiceCollection services, IConfiguration configuration)
         {
             if (configuration.GetValue<bool>("UseAzureAppConfiguration"))
-                services.AddTransient<IChaosRepository, AzureConfigurationAppRepository>();
+                services.AddTransient<IChaosRepository, AzureAppConfigurationRepository>();
             else
                 services.AddTransient<IChaosRepository, ChaosRepository>();
 

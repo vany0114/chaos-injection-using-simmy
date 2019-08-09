@@ -14,15 +14,15 @@ namespace Duber.Chaos.API.Infrastructure.Repository
     /// <summary>
     /// // All the nasty code related to Generics is due to Azure App Configuration doesn't support a batch or generic update, it's necessary to update one setting at a time.
     /// </summary>
-    public class AzureConfigurationAppRepository : IChaosRepository
+    public class AzureAppConfigurationRepository : IChaosRepository
     {
         private readonly IConfiguration _configuration;
         private Dictionary<string, object> _settingsToUpdate;
         private readonly GeneralChaosSetting _chaosSettings;
-        private readonly MethodInfo _getSettingsToUpdateMethodInfo = typeof(AzureConfigurationAppRepository).GetMethod(nameof(GetSettingsToUpdate), BindingFlags.NonPublic | BindingFlags.Instance);
-        private readonly MethodInfo _settingHasChangedMethodInfo = typeof(AzureConfigurationAppRepository).GetMethod(nameof(SettingHasChanged), BindingFlags.NonPublic | BindingFlags.Instance);
+        private readonly MethodInfo _getSettingsToUpdateMethodInfo = typeof(AzureAppConfigurationRepository).GetMethod(nameof(GetSettingsToUpdate), BindingFlags.NonPublic | BindingFlags.Instance);
+        private readonly MethodInfo _settingHasChangedMethodInfo = typeof(AzureAppConfigurationRepository).GetMethod(nameof(SettingHasChanged), BindingFlags.NonPublic | BindingFlags.Instance);
 
-        public AzureConfigurationAppRepository(IOptionsSnapshot<GeneralChaosSetting> chaosSettings, IConfiguration configuration)
+        public AzureAppConfigurationRepository(IOptionsSnapshot<GeneralChaosSetting> chaosSettings, IConfiguration configuration)
         {
             _chaosSettings = chaosSettings.Value;
             _configuration = configuration;
