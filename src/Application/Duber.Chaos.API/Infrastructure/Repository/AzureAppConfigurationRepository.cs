@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Azure.ApplicationModel.Configuration;
+using Azure.Data.AppConfiguration;
 using Duber.Infrastructure.Chaos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -44,7 +44,7 @@ namespace Duber.Chaos.API.Infrastructure.Repository
             {
                 if (!SettingHasChanged(settingToUpdate.Key, settingToUpdate.Value.ToNullString(), currentSettings)) continue;
                 var setting = new ConfigurationSetting(settingToUpdate.Key, settingToUpdate.Value.ToNullString());
-                await client.SetAsync(setting);
+                await client.SetConfigurationSettingAsync(setting);
             }
 
             // find which settings are going to be deleted.
@@ -59,12 +59,12 @@ namespace Duber.Chaos.API.Infrastructure.Repository
 
                     foreach (var settingToUpdate in _settingsToUpdate)
                     {
-                        await client.DeleteAsync(settingToUpdate.Key);
+                        await client.DeleteConfigurationSettingAsync(settingToUpdate.Key);
                     }
                 }
 
             // We always update our sentinel in order to all the settings will be refreshed.
-            await client.SetAsync(new ConfigurationSetting("GeneralChaosSetting:Sentinel", "True"));
+            await client.SetConfigurationSettingAsync(new ConfigurationSetting("GeneralChaosSetting:Sentinel", "True"));
         }
 
         private void GetSettingsToUpdate<T>(T value, string parent = null, int? index = null)

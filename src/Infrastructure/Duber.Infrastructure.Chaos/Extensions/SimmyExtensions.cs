@@ -10,6 +10,9 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Contrib.Simmy.Behavior;
+using Polly.Contrib.Simmy.Latency;
+using Polly.Contrib.Simmy.Outcomes;
 
 namespace Duber.Infrastructure.Chaos
 {
@@ -38,26 +41,26 @@ namespace Duber.Infrastructure.Chaos
                 if (policyEntry.Value is IAsyncPolicy<HttpResponseMessage> policy)
                 {
                     registry[policyEntry.Key] = policy
-                            .WrapAsync(MonkeyPolicy.InjectFaultAsync<HttpResponseMessage>(
-                                (ctx, ct) => GetException(ctx, ct),
-                                GetInjectionRate,
-                                GetEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectFaultAsync<HttpResponseMessage>(
-                                (ctx, ct) => GetHttpResponseMessage(ctx, ct),
-                                GetInjectionRate,
-                                GetHttpResponseEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectLatencyAsync<HttpResponseMessage>(
-                                GetLatency,
-                                GetInjectionRate,
-                                GetEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync<HttpResponseMessage>(
-                                (ctx, ct) => RestartNodes(ctx, ct),
-                                GetClusterChaosInjectionRate,
-                                GetClusterChaosEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync<HttpResponseMessage>(
-                                (ctx, ct) => StopNodes(ctx, ct),
-                                GetClusterChaosInjectionRate,
-                                GetClusterChaosEnabled));
+                        .WrapAsync(MonkeyPolicy.InjectExceptionAsync(with =>
+                            with.Fault(GetException)
+                                .InjectionRate(GetInjectionRate)
+                                .EnabledWhen(GetEnabled)))
+                        .WrapAsync(MonkeyPolicy.InjectResultAsync<HttpResponseMessage>(with =>
+                            with.Result(GetHttpResponseMessage)
+                                .InjectionRate(GetInjectionRate)
+                                .EnabledWhen(GetEnabled)))
+                        .WrapAsync(MonkeyPolicy.InjectLatencyAsync<HttpResponseMessage>(with =>
+                            with.Latency(GetLatency)
+                                .InjectionRate(GetInjectionRate)
+                                .EnabledWhen(GetEnabled)))
+                        .WrapAsync(MonkeyPolicy.InjectBehaviourAsync<HttpResponseMessage>(with =>
+                            with.Behaviour(RestartNodes)
+                                .InjectionRate(GetClusterChaosInjectionRate)
+                                .EnabledWhen(GetClusterChaosEnabled)))
+                        .WrapAsync(MonkeyPolicy.InjectBehaviourAsync<HttpResponseMessage>(with =>
+                            with.Behaviour(StopNodes)
+                                .InjectionRate(GetClusterChaosInjectionRate)
+                                .EnabledWhen(GetClusterChaosEnabled)));
                 }
             }
 
@@ -73,26 +76,26 @@ namespace Duber.Infrastructure.Chaos
         public static IPolicyRegistry<string> AddChaosInjectors<T>(this IPolicyRegistry<string> registry)
         {
             foreach (var policyEntry in registry)
-            {                
+            {
                 if (policyEntry.Value is IAsyncPolicy<T> policy)
                 {
                     registry[policyEntry.Key] = policy
-                            .WrapAsync(MonkeyPolicy.InjectFaultAsync<T>(
-                                (ctx, ct) => GetException(ctx, ct),
-                                GetInjectionRate,
-                                GetEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectLatencyAsync<T>(
-                                GetLatency,
-                                GetInjectionRate,
-                                GetEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync(
-                                (ctx, ct) => RestartNodes(ctx, ct),
-                                GetClusterChaosInjectionRate,
-                                GetClusterChaosEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync(
-                                (ctx, ct) => StopNodes(ctx, ct),
-                                GetClusterChaosInjectionRate,
-                                GetClusterChaosEnabled));
+                        .WrapAsync(MonkeyPolicy.InjectExceptionAsync((with =>
+                            with.Fault<T>(GetException)
+                                .InjectionRate(GetInjectionRate)
+                                .EnabledWhen(GetEnabled))))
+                        .WrapAsync(MonkeyPolicy.InjectLatencyAsync<T>(with =>
+                            with.Latency(GetLatency)
+                                .InjectionRate(GetInjectionRate)
+                                .EnabledWhen(GetEnabled)))
+                        .WrapAsync(MonkeyPolicy.InjectBehaviourAsync<T>(with =>
+                            with.Behaviour(RestartNodes)
+                                .InjectionRate(GetClusterChaosInjectionRate)
+                                .EnabledWhen(GetClusterChaosEnabled)))
+                        .WrapAsync(MonkeyPolicy.InjectBehaviourAsync<T>(with =>
+                            with.Behaviour(StopNodes)
+                                .InjectionRate(GetClusterChaosInjectionRate)
+                                .EnabledWhen(GetClusterChaosEnabled)));
                 }
             }
 
@@ -112,29 +115,29 @@ namespace Duber.Infrastructure.Chaos
                 if (policyEntry.Value is IAsyncPolicy policy)
                 {
                     registry[policyEntry.Key] = policy
-                            .WrapAsync(MonkeyPolicy.InjectFaultAsync(
-                                (ctx, ct) => GetException(ctx, ct),
-                                GetInjectionRate,
-                                GetEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectLatencyAsync(
-                                GetLatency,
-                                GetInjectionRate,
-                                GetEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync(
-                                (ctx, ct) => RestartNodes(ctx, ct),
-                                GetClusterChaosInjectionRate,
-                                GetClusterChaosEnabled))
-                            .WrapAsync(MonkeyPolicy.InjectBehaviourAsync(
-                                (ctx, ct) => StopNodes(ctx, ct),
-                                GetClusterChaosInjectionRate,
-                                GetClusterChaosEnabled));
+                        .WrapAsync(MonkeyPolicy.InjectExceptionAsync(with =>
+                            with.Fault(GetException)
+                                .InjectionRate(GetInjectionRate)
+                                .EnabledWhen(GetEnabled)))
+                        .WrapAsync(MonkeyPolicy.InjectLatencyAsync(with =>
+                            with.Latency(GetLatency)
+                                .InjectionRate(GetInjectionRate)
+                                .EnabledWhen(GetEnabled)))
+                        .WrapAsync(MonkeyPolicy.InjectBehaviourAsync(with =>
+                            with.Behaviour(RestartNodes)
+                                .InjectionRate(GetClusterChaosInjectionRate)
+                                .EnabledWhen(GetClusterChaosEnabled)))
+                        .WrapAsync(MonkeyPolicy.InjectBehaviourAsync(with =>
+                            with.Behaviour(StopNodes)
+                                .InjectionRate(GetClusterChaosInjectionRate)
+                                .EnabledWhen(GetClusterChaosEnabled)));
                 }
             }
 
             return registry;
         }
 
-        private static Task<bool> GetClusterChaosEnabled(Context context)
+        private static Task<bool> GetClusterChaosEnabled(Context context, CancellationToken ct)
         {
             var chaosSettings = context.GetChaosSettings();
             if (chaosSettings == null) return NotEnabled;
@@ -142,7 +145,7 @@ namespace Duber.Infrastructure.Chaos
             return Task.FromResult(chaosSettings.ClusterChaosEnabled);
         }
 
-        private static Task<double> GetClusterChaosInjectionRate(Context context)
+        private static Task<double> GetClusterChaosInjectionRate(Context context, CancellationToken ct)
         {
             var chaosSettings = context.GetChaosSettings();
             if (chaosSettings == null) return NoInjectionRate;
@@ -150,7 +153,7 @@ namespace Duber.Infrastructure.Chaos
             return Task.FromResult(chaosSettings.ClusterChaosInjectionRate);
         }
 
-        private static Task<bool> GetEnabled(Context context)
+        private static Task<bool> GetEnabled(Context context, CancellationToken ct)
         {
             var chaosSettings = context.GetOperationChaosSettings();
             if (chaosSettings == null) return NotEnabled;
@@ -158,7 +161,7 @@ namespace Duber.Infrastructure.Chaos
             return Task.FromResult(chaosSettings.Enabled);
         }
 
-        private static Task<double> GetInjectionRate(Context context)
+        private static Task<double> GetInjectionRate(Context context, CancellationToken ct)
         {
             var chaosSettings = context.GetOperationChaosSettings();
             if (chaosSettings == null) return NoInjectionRate;
@@ -196,7 +199,7 @@ namespace Duber.Infrastructure.Chaos
         {
             if (GetHttpResponseMessage(context, CancellationToken.None) == NoHttpResponse) return NotEnabled;
 
-            return GetEnabled(context);
+            return GetEnabled(context, CancellationToken.None);
         }
 
         private static Task<HttpResponseMessage> GetHttpResponseMessage(Context context, CancellationToken token)
